@@ -4,7 +4,7 @@ Local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URL
 
 ## Run
 
-Frontend is Svelte 5 + Vite + [shadcn-svelte](https://www.shadcn-svelte.com/) (Rhea). Dev/build are wired through Tauri:
+Frontend is Svelte 5 + Vite + [shadcn-svelte](https://www.shadcn-svelte.com/) (Rhea / mist). Dev/build are wired through Tauri:
 
 ```bash
 npm install

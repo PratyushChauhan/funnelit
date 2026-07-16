@@ -15,7 +15,9 @@
       {
         "title": "funnelit",
         "width": 960,
-        "height": 720
+        "height": 720,
+        "decorations": false,
+        "theme": "Dark"
       }
     ],
     "security": {

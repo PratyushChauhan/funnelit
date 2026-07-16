@@ -3,6 +3,7 @@
   import * as api from "$lib/api.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import { Badge } from "$lib/components/ui/badge/index.js";
+  import Titlebar from "./components/Titlebar.svelte";
   import Endpoint from "./components/Endpoint.svelte";
   import ServerList from "./components/ServerList.svelte";
   import Editor from "./components/Editor.svelte";
@@ -67,6 +68,8 @@
   });
 </script>
 
+<Titlebar />
+
 <header class="flex items-center justify-between gap-4 max-sm:flex-col max-sm:items-start">
   <div>
     <h1 class="text-2xl tracking-tight font-semibold m-0">funnelit</h1>
@@ -76,6 +79,14 @@
   </div>
   <div class="flex items-center gap-2 flex-wrap">
     <Badge variant={status.running ? "default" : "outline"}>
+      {#if status.running}
+        <span class="relative flex size-2" aria-hidden="true">
+          <span
+            class="absolute inset-0 animate-ping motion-reduce:animate-none rounded-full bg-current opacity-75"
+          ></span>
+          <span class="relative size-2 rounded-full bg-current"></span>
+        </span>
+      {/if}
       {status.running ? "running" : "stopped"}
     </Badge>
     <Button variant="ghost" onclick={onToggle}>

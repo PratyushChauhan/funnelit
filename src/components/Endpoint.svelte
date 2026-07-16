@@ -102,7 +102,7 @@
       </div>
     </div>
     <pre
-      class="m-0 rounded-xl bg-foreground text-[#f4efe4] p-3 overflow-auto font-mono text-xs leading-relaxed"
+      class="m-0 overflow-auto rounded-2xl bg-background p-3 font-mono text-xs leading-relaxed text-foreground ring-1 ring-foreground/10"
     >{snippet}</pre>
     <Separator />
     <div class="flex items-center justify-between gap-4">
