@@ -22,14 +22,25 @@
   let installingId = $state("");
   let msg = $state("");
   let msgTone = $state("");
+  /** URLs saved via upsert even if parent refresh fails. */
+  let justInstalledUrls = $state([]);
 
   const visible = $derived(filterMarketplaceEntries(entries, query));
+
+  /**
+   * Inputs: catalog entry. Outputs: true when configured or just installed.
+   */
+  function shownInstalled(entry) {
+    return (
+      isInstalled(entry, servers) || justInstalledUrls.includes(entry.url)
+    );
+  }
 
   /**
    * Inputs: catalog entry. Outputs: OAuth-first install or error message.
    */
   async function onInstall(entry) {
-    if (installingId || isInstalled(entry, servers)) return;
+    if (installingId || shownInstalled(entry)) return;
     installingId = entry.id;
     msg = "Opening browser sign-in…";
     msgTone = "";
@@ -54,9 +65,14 @@
         },
         secrets: {},
       });
-      await refresh();
+      justInstalledUrls = [...justInstalledUrls, entry.url];
       msg = `${entry.name} installed`;
       msgTone = "ok";
+      try {
+        await refresh();
+      } catch {
+        /* keep success; justInstalledUrls blocks duplicate install */
+      }
     } catch (e) {
       msg = String(e);
       msgTone = "err";
@@ -82,6 +98,8 @@
   <Card.Content class="grid gap-2">
     {#if msg}
       <p
+        aria-live="polite"
+        role="status"
         class="text-xs m-0 {msgTone === 'err'
           ? 'text-destructive'
           : msgTone === 'ok'
@@ -98,7 +116,7 @@
         </li>
       {:else}
         {#each visible as entry (entry.id)}
-          {@const installed = isInstalled(entry, servers)}
+          {@const installed = shownInstalled(entry)}
           {@const busy = installingId === entry.id}
           <li
             class="flex items-center gap-2 rounded-lg border bg-card px-2 py-1.5"
