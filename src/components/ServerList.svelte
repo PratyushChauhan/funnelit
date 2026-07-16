@@ -1,7 +1,9 @@
 <script>
   import * as api from "$lib/api.js";
+  import { providerIconForUrl } from "$lib/marketplace-icons.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import * as Card from "$lib/components/ui/card/index.js";
+  import ProviderIcon from "./ProviderIcon.svelte";
 
   /**
    * Inputs: servers list, edit/refresh callbacks.
@@ -42,6 +44,15 @@
       ? `${server.transport.command} ${(server.transport.args || []).join(" ")}`
       : server.transport.url;
   }
+
+  /**
+   * Inputs: server. Outputs: provider icon URL when catalog matches.
+   */
+  function iconFor(server) {
+    return server?.transport?.kind === "http"
+      ? providerIconForUrl(server.transport.url)
+      : "";
+  }
 </script>
 
 <Card.Root>
@@ -60,12 +71,15 @@
           <li
             class="flex items-center justify-between gap-3 rounded-xl border bg-card p-3 max-sm:flex-col max-sm:items-stretch"
           >
-            <div class="min-w-0">
-              <strong class="block font-semibold">{server.name}</strong>
-              <div class="text-muted-foreground text-xs truncate">
-                {server.transport.kind} · {server.enabled
-                  ? "enabled"
-                  : "disabled"} · {detail(server)}
+            <div class="flex min-w-0 items-center gap-2.5">
+              <ProviderIcon src={iconFor(server)} name={server.name} />
+              <div class="min-w-0">
+                <strong class="block font-semibold">{server.name}</strong>
+                <div class="text-muted-foreground text-xs truncate">
+                  {server.transport.kind} · {server.enabled
+                    ? "enabled"
+                    : "disabled"} · {detail(server)}
+                </div>
               </div>
             </div>
             <div class="flex gap-2 flex-wrap">

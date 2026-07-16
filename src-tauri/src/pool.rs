@@ -4,19 +4,21 @@ use std::{collections::HashMap, sync::Arc, time::Duration};
 
 use http::{HeaderName, HeaderValue};
 use rmcp::{
-    RoleClient, ServiceExt,
     model::{CallToolRequestParams, CallToolResult, Tool},
     service::{Peer, RunningService},
     transport::{
-        ConfigureCommandExt, StreamableHttpClientTransport, TokioChildProcess,
-        streamable_http_client::StreamableHttpClientTransportConfig,
+        streamable_http_client::StreamableHttpClientTransportConfig, ConfigureCommandExt,
+        StreamableHttpClientTransport, TokioChildProcess,
     },
+    RoleClient, ServiceExt,
 };
 use tokio::{process::Command, sync::Mutex};
 
-use crate::config::{
-    self, ConfigError, McpServer, McpTransport, get_bearer_secret, get_env_secret,
-    get_header_secret, redact, transport_fingerprint,
+use crate::{
+    config::{
+        self, get_bearer_secret, get_env_secret, get_header_secret, redact, transport_fingerprint,
+        ConfigError, McpServer, McpTransport,
+    },
 };
 
 struct Cached {
@@ -54,7 +56,10 @@ impl ClientPool {
         };
         if let Some(slot) = slot {
             if let Some(mut cached) = slot.lock().await.take() {
-                let _ = cached.running.close_with_timeout(Duration::from_secs(2)).await;
+                let _ = cached
+                    .running
+                    .close_with_timeout(Duration::from_secs(2))
+                    .await;
             }
         }
     }
@@ -67,7 +72,10 @@ impl ClientPool {
         };
         for (_, slot) in slots {
             if let Some(mut cached) = slot.lock().await.take() {
-                let _ = cached.running.close_with_timeout(Duration::from_secs(2)).await;
+                let _ = cached
+                    .running
+                    .close_with_timeout(Duration::from_secs(2))
+                    .await;
             }
         }
     }
@@ -108,7 +116,9 @@ impl ClientPool {
     /// Inputs: server. Outputs: upstream tool list (reconnects once on closed transport).
     pub async fn list_tools(&self, server: &McpServer) -> Result<Vec<Tool>, ConfigError> {
         match self.peer(server).await?.list_all_tools().await {
-            Ok(tools) => Ok(tools),
+            Ok(tools) => {
+                Ok(tools)
+            }
             Err(err) => {
                 self.invalidate(&server.id).await;
                 self.peer(server)
@@ -132,9 +142,11 @@ impl ClientPool {
         if let Some(args) = arguments {
             params = params.with_arguments(args);
         }
-        peer.call_tool(params)
+        let result = peer
+            .call_tool(params)
             .await
-            .map_err(|e| ConfigError::msg(redact(&e.to_string())))
+            .map_err(|e| ConfigError::msg(redact(&e.to_string())));
+        result
     }
 }
 
@@ -178,8 +190,8 @@ async fn connect(server: &McpServer) -> Result<RunningService<RoleClient, ()>, C
                 if let Some(val) = get_header_secret(&server.id, key) {
                     let name = HeaderName::from_bytes(key.as_bytes())
                         .map_err(|e| ConfigError::msg(e.to_string()))?;
-                    let value = HeaderValue::from_str(&val)
-                        .map_err(|e| ConfigError::msg(e.to_string()))?;
+                    let value =
+                        HeaderValue::from_str(&val).map_err(|e| ConfigError::msg(e.to_string()))?;
                     headers.insert(name, value);
                 }
             }

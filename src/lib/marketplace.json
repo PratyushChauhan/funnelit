@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "fathom",
+      "name": "Fathom",
+      "description": "Search meeting recordings, transcripts, and summaries.",
+      "url": "https://api.fathom.ai/mcp"
+    },
+    {
+      "id": "linear",
+      "name": "Linear",
+      "description": "Create and manage issues, projects, and cycles.",
+      "url": "https://mcp.linear.app/mcp"
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "description": "Read and update pages, databases, and workspace content.",
+      "url": "https://mcp.notion.com/mcp"
+    },
+    {
+      "id": "sentry",
+      "name": "Sentry",
+      "description": "Inspect errors, issues, and performance data.",
+      "url": "https://mcp.sentry.dev/mcp"
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "description": "Query customers, payments, and Stripe account data.",
+      "url": "https://mcp.stripe.com"
+    },
+    {
+      "id": "neon",
+      "name": "Neon",
+      "description": "Manage Neon Postgres projects and run SQL.",
+      "url": "https://mcp.neon.tech/mcp"
+    },
+    {
+      "id": "intercom",
+      "name": "Intercom",
+      "description": "Access conversations and customer support inbox data.",
+      "url": "https://mcp.intercom.com/mcp"
+    },
+    {
+      "id": "canva",
+      "name": "Canva",
+      "description": "Work with Canva designs and brand assets.",
+      "url": "https://mcp.canva.com/mcp"
+    }
+  ]
+}

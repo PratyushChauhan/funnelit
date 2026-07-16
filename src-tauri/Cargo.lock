@@ -1259,6 +1259,7 @@ version = "0.1.0"
 dependencies = [
  "axum",
  "base64 0.22.1",
+ "dirs 6.0.0",
  "http",
  "keyring",
  "open",
@@ -1275,6 +1276,7 @@ dependencies = [
  "tempfile",
  "thiserror 2.0.18",
  "tokio",
+ "tokio-stream",
  "tokio-util",
  "tower",
  "tracing",

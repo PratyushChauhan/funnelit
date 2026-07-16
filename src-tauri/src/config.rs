@@ -234,11 +234,9 @@ pub fn prune_secrets(previous: &McpServer, next: &McpServer) -> Result<(), Confi
 
 fn secret_keysets(server: &McpServer) -> (HashSet<String>, HashSet<String>, bool) {
     match &server.transport {
-        McpTransport::Stdio { env_keys, .. } => (
-            env_keys.iter().cloned().collect(),
-            HashSet::new(),
-            false,
-        ),
+        McpTransport::Stdio { env_keys, .. } => {
+            (env_keys.iter().cloned().collect(), HashSet::new(), false)
+        }
         McpTransport::Http {
             header_keys,
             has_bearer,
@@ -332,7 +330,10 @@ pub fn get_oauth_host_client_secret(host: &str) -> Option<String> {
 
 /// Inputs: mcp id and refresh token. Outputs: unit after keychain write.
 pub fn store_oauth_refresh(mcp_id: &str, refresh_token: &str) -> Result<(), ConfigError> {
-    set_secret(&secret_user("oauth", mcp_id, "refresh_token"), refresh_token)
+    set_secret(
+        &secret_user("oauth", mcp_id, "refresh_token"),
+        refresh_token,
+    )
 }
 
 /// Inputs: mcp id. Outputs: refresh token if present.
@@ -378,7 +379,11 @@ pub fn validate_server(server: &McpServer) -> Result<(), ConfigError> {
 }
 
 /// Inputs: config and candidate id that must be unique among other servers. Outputs: Ok or duplicate error.
-pub fn validate_unique_id(config: &AppConfig, id: &str, replacing: bool) -> Result<(), ConfigError> {
+pub fn validate_unique_id(
+    config: &AppConfig,
+    id: &str,
+    replacing: bool,
+) -> Result<(), ConfigError> {
     let count = config.servers.iter().filter(|s| s.id == id).count();
     let allowed = if replacing { 1 } else { 0 };
     if count > allowed {
@@ -493,10 +498,7 @@ mod tests {
 
     #[test]
     fn secret_user_encodes_colons() {
-        assert_eq!(
-            secret_user("env", "a:b", "c:d"),
-            "env:a%3Ab:c%3Ad"
-        );
+        assert_eq!(secret_user("env", "a:b", "c:d"), "env:a%3Ab:c%3Ad");
     }
 
     #[test]

@@ -101,9 +101,13 @@
         <Button variant="outline" onclick={onRotate}>Rotate</Button>
       </div>
     </div>
-    <pre
-      class="m-0 overflow-auto rounded-2xl bg-background p-3 font-mono text-xs leading-relaxed text-foreground ring-1 ring-foreground/10"
-    >{snippet}</pre>
+    <div class="grid gap-2">
+      <Label>Cursor mcp.json</Label>
+      <pre
+        class="m-0 overflow-auto rounded-2xl bg-background p-3 font-mono text-xs leading-relaxed text-foreground ring-1 ring-foreground/10"
+      >{snippet}</pre>
+      <Button variant="outline" class="w-fit" onclick={() => copy(snippet)}>Copy snippet</Button>
+    </div>
     <Separator />
     <div class="flex items-center justify-between gap-4">
       <div class="grid gap-0.5">

@@ -12,14 +12,14 @@ use axum::{
     routing::get,
     Router,
 };
-use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
+use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
 use rand::RngCore;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use tokio::sync::{Mutex, oneshot};
+use tokio::sync::{oneshot, Mutex};
 use url::Url;
 
-use crate::config::{self, SecretMap, redact};
+use crate::config::{self, redact, SecretMap};
 
 pub const REDIRECT_URI: &str = "http://127.0.0.1:7342/oauth/callback";
 const BIND_ADDR: &str = "127.0.0.1:7342";
@@ -251,7 +251,10 @@ pub async fn authorize(
 
     config::store_oauth_client(mcp_id, &client_id, client_secret.as_deref())
         .map_err(|e| e.to_string())?;
-    if let Some(host) = Url::parse(url).ok().and_then(|u| u.host_str().map(str::to_string)) {
+    if let Some(host) = Url::parse(url)
+        .ok()
+        .and_then(|u| u.host_str().map(str::to_string))
+    {
         let _ = config::store_oauth_host_client(&host, &client_id, client_secret.as_deref());
     }
     config::store_secrets(
@@ -304,7 +307,10 @@ async fn discover(url: &str) -> Result<Option<(ProtectedResource, AuthServerMeta
         .await
         .map_err(|e| redact(&e.to_string()))?;
     if !resp.status().is_success() {
-        return Err(format!("authorization server metadata HTTP {}", resp.status()));
+        return Err(format!(
+            "authorization server metadata HTTP {}",
+            resp.status()
+        ));
     }
     let meta = resp
         .json::<AuthServerMeta>()
@@ -327,7 +333,10 @@ fn discovery_urls(mcp_url: &str) -> Result<Vec<String>, String> {
     }
     if let Some(host) = parsed.host_str() {
         if host.contains("slack") {
-            out.insert(0, "https://mcp.slack.com/.well-known/oauth-protected-resource".into());
+            out.insert(
+                0,
+                "https://mcp.slack.com/.well-known/oauth-protected-resource".into(),
+            );
         }
     }
     out.dedup();
@@ -391,7 +400,10 @@ async fn resolve_client(
     }
     // Reuse credentials from a previous sign-in for this MCP / host.
     if let Some(id) = config::get_oauth_client_id(mcp_id) {
-        return Ok((id, client_secret.or_else(|| config::get_oauth_client_secret(mcp_id))));
+        return Ok((
+            id,
+            client_secret.or_else(|| config::get_oauth_client_secret(mcp_id)),
+        ));
     }
     if let Some(id) = host_client_id(url) {
         let host = Url::parse(url)
@@ -407,12 +419,10 @@ async fn resolve_client(
     if let Some(reg) = &as_meta.registration_endpoint {
         return register_client(reg).await;
     }
-    Err(
-        "this server does not support automatic registration. \
+    Err("this server does not support automatic registration. \
          Add your OAuth Client ID under Advanced (bring your own app), \
          then Sign in again"
-            .into(),
-    )
+        .into())
 }
 
 fn host_client_id(url: &str) -> Option<String> {
@@ -514,14 +524,16 @@ async fn exchange_code(
         return Err(format!("token exchange failed: {}", redact(&detail)));
     }
     if !status.is_success() && parsed.access_token.is_none() {
-        return Err(format!(
-            "token exchange HTTP {status}: {}",
-            redact(&body)
-        ));
+        return Err(format!("token exchange HTTP {status}: {}", redact(&body)));
     }
     let access = parsed
         .access_token
-        .or_else(|| parsed.authed_user.as_ref().and_then(|u| u.access_token.clone()))
+        .or_else(|| {
+            parsed
+                .authed_user
+                .as_ref()
+                .and_then(|u| u.access_token.clone())
+        })
         .ok_or_else(|| "token response missing access_token".to_string())?;
     let refresh = parsed.refresh_token.or_else(|| {
         parsed
@@ -604,14 +616,12 @@ mod tests {
     #[test]
     fn discovery_urls_include_path_aware() {
         let urls = discovery_urls("https://example.com/mcp").unwrap();
-        assert!(
-            urls.iter()
-                .any(|u| u == "https://example.com/.well-known/oauth-protected-resource/mcp")
-        );
-        assert!(
-            urls.iter()
-                .any(|u| u == "https://example.com/.well-known/oauth-protected-resource")
-        );
+        assert!(urls
+            .iter()
+            .any(|u| u == "https://example.com/.well-known/oauth-protected-resource/mcp"));
+        assert!(urls
+            .iter()
+            .any(|u| u == "https://example.com/.well-known/oauth-protected-resource"));
     }
 
     #[test]
@@ -657,9 +667,10 @@ mod tests {
     fn client_secret_required_from_methods() {
         assert!(!client_secret_required(&[]));
         assert!(!client_secret_required(&["none".into()]));
-        assert!(!client_secret_required(
-            &["none".into(), "client_secret_post".into()]
-        ));
+        assert!(!client_secret_required(&[
+            "none".into(),
+            "client_secret_post".into()
+        ]));
         assert!(client_secret_required(&["client_secret_post".into()]));
     }
 

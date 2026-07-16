@@ -3,10 +3,12 @@
   import * as api from "$lib/api.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import { Badge } from "$lib/components/ui/badge/index.js";
+  import * as Tabs from "$lib/components/ui/tabs/index.js";
   import Titlebar from "./components/Titlebar.svelte";
   import Endpoint from "./components/Endpoint.svelte";
   import ServerList from "./components/ServerList.svelte";
   import Editor from "./components/Editor.svelte";
+  import Marketplace from "./components/Marketplace.svelte";
 
   let status = $state({ running: false, endpoint: "" });
   let token = $state("");
@@ -14,6 +16,7 @@
   let autostart = $state(false);
   let editorOpen = $state(false);
   let editing = $state(null);
+  let tab = $state("configure");
 
   /**
    * Inputs: none. Outputs: refreshed status, token, servers, autostart.
@@ -95,6 +98,18 @@
   </div>
 </header>
 
-<Endpoint {status} {token} bind:autostart {refresh} />
-<ServerList {servers} {onEdit} {refresh} />
+<Tabs.Root bind:value={tab}>
+  <Tabs.List>
+    <Tabs.Trigger value="configure">Configure</Tabs.Trigger>
+    <Tabs.Trigger value="marketplace">Marketplace</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Content value="configure" class="grid gap-4">
+    <Endpoint {status} {token} bind:autostart {refresh} />
+    <ServerList {servers} {onEdit} {refresh} />
+  </Tabs.Content>
+  <Tabs.Content value="marketplace">
+    <Marketplace {servers} {refresh} />
+  </Tabs.Content>
+</Tabs.Root>
+
 <Editor bind:open={editorOpen} server={editing} onSaved={refresh} />

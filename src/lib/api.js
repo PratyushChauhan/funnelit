@@ -74,3 +74,8 @@ export const startMcpOauth = (args) => invoke("start_mcp_oauth", args);
  * Inputs: url. Outputs: void after opening in the system browser.
  */
 export const openUrl = (url) => invoke("open_url", { url });
+
+/**
+ * Inputs: none. Outputs: absolute path to the funnelit binary for stdio MCP.
+ */
+export const mcpStdioCommand = () => invoke("mcp_stdio_command");
