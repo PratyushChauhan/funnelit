@@ -11,6 +11,7 @@ npm install
 npm run tauri dev
 ```
 
+CI (`.github/workflows/build.yml`) builds macOS (arm64 + x64) and Linux on push/PR and uploads the installers as artifacts.
 
 ## Funnel endpoint
 
