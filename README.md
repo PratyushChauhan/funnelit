@@ -13,6 +13,13 @@ npm run tauri dev
 
 CI (`.github/workflows/build.yml`) builds macOS (arm64 + x64) and Linux on push to `main`, PRs, or manual dispatch, and uploads the installers as artifacts.
 
+To publish a [GitHub Release](https://github.com/PratyushChauhan/funnelit/releases) with installers, tag and push (from a commit that includes `.github/workflows/release.yml`):
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
 ## Funnel endpoint
 
 The funnel starts automatically on launch and keeps running in the system tray when you close the window. Open from the tray to configure; Quit from the tray to stop the endpoint. Optionally enable **Run at system startup** (starts hidden in the tray). Pause/Resume in the UI if needed:
