@@ -11,14 +11,9 @@ npm install
 npm run tauri dev
 ```
 
-CI (`.github/workflows/build.yml`) builds macOS (arm64 + x64) and Linux on push to `main`, PRs, or manual dispatch, and uploads the installers as artifacts.
-
-To publish a [GitHub Release](https://github.com/PratyushChauhan/funnelit/releases) with installers, tag and push (from a commit that includes `.github/workflows/release.yml`):
-
-```bash
-git tag v0.1.0
-git push origin v0.1.0
-```
+CI:
+- PRs / manual: `.github/workflows/build.yml` uploads installers as workflow artifacts
+- Push to `main`: `.github/workflows/release.yml` builds macOS (arm64 + x64) and Linux and publishes them to a [GitHub Release](https://github.com/PratyushChauhan/funnelit/releases) tagged `v__VERSION__` from `tauri.conf.json` (currently `v0.1.0`). Re-pushes with the same version update that release’s assets.
 
 ## Funnel endpoint
 
