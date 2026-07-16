@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>funnelit</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="/main.js" defer></script>
+  </head>
+  <body>
+    <header class="bar">
+      <div>
+        <h1>funnelit</h1>
+        <p class="muted">Local MCP funnel</p>
+      </div>
+      <div class="actions">
+        <span id="status-pill" class="pill off">stopped</span>
+        <button id="btn-toggle" type="button">Start</button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Endpoint</h2>
+      <label>
+        URL
+        <div class="row">
+          <input id="endpoint-url" readonly />
+          <button id="btn-copy-url" type="button">Copy</button>
+        </div>
+      </label>
+      <label>
+        Bearer token
+        <div class="row">
+          <input id="endpoint-token" type="password" readonly />
+          <button id="btn-show-token" type="button">Show</button>
+          <button id="btn-copy-token" type="button">Copy</button>
+          <button id="btn-rotate-token" type="button">Rotate</button>
+        </div>
+      </label>
+      <pre id="client-snippet" class="snippet"></pre>
+    </section>
+
+    <section class="panel">
+      <div class="bar tight">
+        <h2>MCPs</h2>
+        <button id="btn-add" type="button">Add MCP</button>
+      </div>
+      <ul id="server-list" class="list"></ul>
+    </section>
+
+    <dialog id="editor">
+      <form method="dialog" id="editor-form">
+        <h2 id="editor-title">Add MCP</h2>
+        <input type="hidden" id="edit-id" />
+        <label>
+          Name
+          <input id="edit-name" required />
+        </label>
+        <label class="check">
+          <input id="edit-enabled" type="checkbox" checked />
+          Enabled
+        </label>
+        <label>
+          Transport
+          <select id="edit-kind">
+            <option value="stdio">stdio command</option>
+            <option value="http">HTTP URL</option>
+          </select>
+        </label>
+        <div id="stdio-fields" class="stack">
+          <label>
+            Command
+            <input id="edit-command" placeholder="/usr/bin/npx" />
+          </label>
+          <label>
+            Args (one per line)
+            <textarea id="edit-args" rows="3" placeholder="-y&#10;@modelcontextprotocol/server-everything"></textarea>
+          </label>
+          <label>
+            Env secrets (KEY=value per line)
+            <textarea id="edit-env" rows="3" placeholder="API_KEY=..."></textarea>
+          </label>
+        </div>
+        <div id="http-fields" class="stack hidden">
+          <label>
+            MCP URL
+            <input id="edit-url" placeholder="https://example.com/mcp" />
+          </label>
+          <label>
+            Bearer token (optional)
+            <input id="edit-bearer" type="password" />
+          </label>
+          <label>
+            Headers (Name=value per line)
+            <textarea id="edit-headers" rows="3" placeholder="X-Api-Key=..."></textarea>
+          </label>
+        </div>
+        <p id="editor-msg" class="msg"></p>
+        <div class="actions">
+          <button id="btn-test-draft" type="button">Test</button>
+          <button value="cancel" type="submit">Cancel</button>
+          <button id="btn-save" value="save" type="submit">Save</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
