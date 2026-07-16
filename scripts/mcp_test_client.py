@@ -197,10 +197,10 @@ def run_lifecycle(
 
     st, hdrs, raw, ms = c.get_sse(peek=get_read)
     ct = hdrs.get("content-type", "")
-    # 200/202 SSE keep-alive or 405 (no SSE) are both acceptable.
+    is_sse = ct.split(";", 1)[0].strip().lower() == "text/event-stream"
     step(
         "GET_sse",
-        st in (200, 202, 405),
+        st == 200 and is_sse,
         status=st,
         ms=round(ms, 1),
         content_type=ct,

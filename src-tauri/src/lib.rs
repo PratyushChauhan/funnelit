@@ -54,13 +54,16 @@ pub fn run_mcp_stdio() {
             std::process::exit(1);
         }
     };
-    let _ = std::fs::create_dir_all(&dir);
+    if let Err(err) = std::fs::create_dir_all(&dir) {
+        eprintln!("funnelit mcp-stdio: failed to create config directory: {err}");
+        std::process::exit(1);
+    }
     let rt = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()
         .expect("tokio runtime");
     rt.block_on(async move {
-        let inner = match AppInner::new(dir) {
+        let inner = match AppInner::for_stdio(dir) {
             Ok(inner) => Arc::new(inner),
             Err(err) => {
                 eprintln!("funnelit mcp-stdio: {err}");
@@ -103,8 +106,15 @@ struct ServerDto {
 /// Inputs: app state. Outputs: funnel running flag and endpoint URL.
 #[tauri::command]
 async fn get_status(state: tauri::State<'_, State>) -> Result<StatusDto, String> {
+    let local = state.0.running.load(std::sync::atomic::Ordering::SeqCst);
+    let running = if local {
+        true
+    } else {
+        let token = state.0.token.read().await.clone();
+        gateway::existing_endpoint_healthy(&token).await
+    };
     Ok(StatusDto {
-        running: state.0.running.load(std::sync::atomic::Ordering::SeqCst),
+        running,
         endpoint: endpoint_url().into(),
     })
 }

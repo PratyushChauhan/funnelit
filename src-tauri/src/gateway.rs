@@ -60,21 +60,33 @@ pub struct AppInner {
 }
 
 impl AppInner {
-    /// Inputs: config directory. Outputs: initialized app state.
-    pub fn new(dir: std::path::PathBuf) -> Result<Self, config::ConfigError> {
+    /// Inputs: config directory and optional HTTP bearer. Outputs: app state.
+    fn with_token(
+        dir: std::path::PathBuf,
+        token: Option<String>,
+    ) -> Result<Self, config::ConfigError> {
         let cfg = config::load_config(&dir)?;
-        let token = config::ensure_endpoint_token()?;
         Ok(Self {
             dir,
             config: Arc::new(RwLock::new(cfg)),
             pool: Arc::new(crate::pool::ClientPool::new()),
-            token: Arc::new(RwLock::new(token)),
+            token: Arc::new(RwLock::new(token.unwrap_or_default())),
             running: Arc::new(AtomicBool::new(false)),
             exiting: Arc::new(AtomicBool::new(false)),
             lifecycle: Arc::new(Mutex::new(())),
             shutdown: Arc::new(RwLock::new(None)),
             server_task: Arc::new(RwLock::new(None)),
         })
+    }
+
+    /// Inputs: config directory. Outputs: app state with keyring endpoint token.
+    pub fn new(dir: std::path::PathBuf) -> Result<Self, config::ConfigError> {
+        Self::with_token(dir, Some(config::ensure_endpoint_token()?))
+    }
+
+    /// Inputs: config directory. Outputs: app state for stdio (no keyring token).
+    pub fn for_stdio(dir: std::path::PathBuf) -> Result<Self, config::ConfigError> {
+        Self::with_token(dir, None)
     }
 
     /// Inputs: none. Outputs: server matching id, if present.
@@ -186,9 +198,7 @@ impl Gateway {
             .call_tool(&server, &tool_name, arguments)
             .await
         {
-            Ok(result) => {
-                Ok(result)
-            }
+            Ok(result) => Ok(cursor_safe_tool_result(result)),
             Err(e) => {
                 Ok(CallToolResult::structured_error(serde_json::json!({
                     "error": redact(&e.to_string())
@@ -196,6 +206,17 @@ impl Gateway {
             }
         }
     }
+}
+
+/// Inputs: upstream CallToolResult. Outputs: same with object-only structuredContent.
+fn cursor_safe_tool_result(mut result: CallToolResult) -> CallToolResult {
+    if let Some(sc) = result.structured_content.take() {
+        result.structured_content = Some(match sc {
+            serde_json::Value::Object(_) => sc,
+            other => serde_json::json!({ "result": other }),
+        });
+    }
+    result
 }
 
 impl Gateway {
@@ -324,8 +345,8 @@ fn gateway_router(app: Arc<AppInner>, child: CancellationToken) -> Router {
         .layer(middleware::from_fn_with_state(app, auth_middleware))
 }
 
-/// Inputs: bearer token. Outputs: true when an existing funnel on BIND_ADDR answers initialize.
-async fn existing_endpoint_healthy(token: &str) -> bool {
+/// Inputs: bearer token. Outputs: true when Funnelit on BIND_ADDR answers initialize.
+pub async fn existing_endpoint_healthy(token: &str) -> bool {
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(2))
         .build();
@@ -353,7 +374,20 @@ async fn existing_endpoint_healthy(token: &str) -> bool {
     else {
         return false;
     };
-    resp.status().is_success()
+    if !resp.status().is_success() {
+        return false;
+    }
+    let Ok(v) = resp.json::<serde_json::Value>().await else {
+        return false;
+    };
+    if v.get("error").is_some() {
+        return false;
+    }
+    v.get("result")
+        .and_then(|r| r.get("serverInfo"))
+        .and_then(|s| s.get("name"))
+        .and_then(|n| n.as_str())
+        == Some("funnelit")
 }
 
 /// Inputs: shared app state. Outputs: Ok(()) when the funnel HTTP server is listening.
@@ -369,8 +403,8 @@ pub async fn start(app: Arc<AppInner>) -> Result<(), String> {
         Ok(listener) => listener,
         Err(err) if err.kind() == std::io::ErrorKind::AddrInUse => {
             let token = app.token.read().await.clone();
+            // External process owns the port — do not mark local `running`.
             if existing_endpoint_healthy(&token).await {
-                app.running.store(true, Ordering::SeqCst);
                 return Ok(());
             }
             return Err(format!(
@@ -426,7 +460,7 @@ pub async fn serve_stdio(app: Arc<AppInner>) -> Result<(), String> {
         .serve(stdio())
         .await
         .map_err(|e| e.to_string())?;
-    let _ = running.waiting().await;
+    running.waiting().await.map_err(|e| e.to_string())?;
     Ok(())
 }
 
@@ -458,6 +492,20 @@ mod tests {
         assert!(names.contains(&"list_mcps"));
         assert!(names.contains(&"list_mcp_tools"));
         assert!(names.contains(&"execute_mcp_tool"));
+    }
+
+    #[test]
+    fn cursor_safe_wraps_array_structured_content() {
+        let raw = CallToolResult::structured(serde_json::json!([1, 2]));
+        let safe = cursor_safe_tool_result(raw);
+        assert!(safe.structured_content.as_ref().unwrap().is_object());
+        assert_eq!(
+            safe.structured_content.unwrap()["result"],
+            serde_json::json!([1, 2])
+        );
+        let obj = CallToolResult::structured(serde_json::json!({ "ok": true }));
+        let kept = cursor_safe_tool_result(obj);
+        assert_eq!(kept.structured_content.unwrap()["ok"], true);
     }
 
     /// Inputs: app config. Outputs: app state with a fixed bearer token.
