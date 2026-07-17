@@ -70,7 +70,7 @@ export async function ensureBinary(version, key) {
   }
 
   fs.mkdirSync(cacheDir(), { recursive: true });
-  const tmp = `${dest}.partial`;
+  const tmp = `${dest}-${crypto.randomBytes(4).toString("hex")}.partial`;
   process.stderr.write(`funnelit: downloading ${name}…\n`);
   const [binBuf, sumBuf] = await Promise.all([
     httpsGet(`${base}/${name}`),
@@ -83,8 +83,8 @@ export async function ensureBinary(version, key) {
       `checksum mismatch for ${name}: got ${actual}, want ${expected}`,
     );
   }
-  fs.writeFileSync(tmp, binBuf, { mode: 0o755 });
+  fs.writeFileSync(tmp, binBuf);
+  fs.chmodSync(tmp, 0o755);
   fs.renameSync(tmp, dest);
-  fs.chmodSync(dest, 0o755);
   return dest;
 }

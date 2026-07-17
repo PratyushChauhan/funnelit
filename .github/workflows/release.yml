@@ -90,6 +90,9 @@ jobs:
           chmod +x "dist-cli/${NAME}"
           if command -v strip >/dev/null; then
             strip "dist-cli/${NAME}" || true
+            if command -v codesign >/dev/null; then
+              codesign --force --sign - "dist-cli/${NAME}" || true
+            fi
           fi
           (
             cd dist-cli

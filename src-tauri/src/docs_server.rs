@@ -44,13 +44,21 @@ async fn docs_reachable() -> bool {
     else {
         return false;
     };
-    client.get(URL).send().await.map(|r| r.status().is_success()).unwrap_or(false)
+    client
+        .get(URL)
+        .send()
+        .await
+        .map(|r| r.status().is_success())
+        .unwrap_or(false)
 }
 
 /// Inputs: app handle. Outputs: docs URL after ensuring the local server is listening.
+///
+/// Uses a dedicated OS thread + Tokio runtime: spawning on Tauri's runtime accepted
+/// TCP but never served HTTP in practice.
 pub async fn ensure_and_open(app: &AppHandle) -> Result<String, String> {
     let root = resolve_docs_root(app)?;
-    if !STARTED.load(Ordering::SeqCst) {
+    if !STARTED.swap(true, Ordering::SeqCst) {
         let root_thread = root.clone();
         thread::Builder::new()
             .name("funnelit-docs".into())
@@ -62,6 +70,7 @@ pub async fn ensure_and_open(app: &AppHandle) -> Result<String, String> {
                     Ok(rt) => rt,
                     Err(err) => {
                         eprintln!("funnelit docs runtime: {err}");
+                        STARTED.store(false, Ordering::SeqCst);
                         return;
                     }
                 };
@@ -70,10 +79,10 @@ pub async fn ensure_and_open(app: &AppHandle) -> Result<String, String> {
                         Ok(l) => l,
                         Err(err) => {
                             eprintln!("funnelit docs bind {BIND}: {err}");
+                            STARTED.store(false, Ordering::SeqCst);
                             return;
                         }
                     };
-                    STARTED.store(true, Ordering::SeqCst);
                     let router = Router::new().fallback_service(
                         ServeDir::new(root_thread).append_index_html_on_directories(true),
                     );
@@ -83,7 +92,10 @@ pub async fn ensure_and_open(app: &AppHandle) -> Result<String, String> {
                     }
                 });
             })
-            .map_err(|e| format!("docs server thread: {e}"))?;
+            .map_err(|e| {
+                STARTED.store(false, Ordering::SeqCst);
+                format!("docs server thread: {e}")
+            })?;
 
         for _ in 0..40 {
             if docs_reachable().await {
@@ -92,6 +104,7 @@ pub async fn ensure_and_open(app: &AppHandle) -> Result<String, String> {
             tokio::time::sleep(Duration::from_millis(50)).await;
         }
         if !docs_reachable().await {
+            STARTED.store(false, Ordering::SeqCst);
             return Err(format!(
                 "docs server started but {URL} is not responding (root {})",
                 root.display()

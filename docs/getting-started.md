@@ -4,7 +4,7 @@
 2. Open **Configure**. Copy the endpoint URL and bearer token.
 3. Add MCPs:
    - **Marketplace** — one-click install for curated DCR HTTP MCPs
-   - **Configure → Add MCP** — stdio commands or any HTTP MCP URL
+   - **Configure → Add MCP** — stdio commands or HTTP MCP URLs (remote URLs need HTTPS; plain HTTP is loopback-only — see [OAuth](./oauth.md))
 4. Point your MCP host (Cursor, etc.) at the funnel endpoint with the bearer token.
 
 ## Tray and pause
