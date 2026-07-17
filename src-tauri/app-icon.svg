@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Sumeru">
+  <!-- App/tray icon: light mark for dark panels. Docs mark stays navy. -->
+  <g fill="#e8eef5">
+    <path d="M64 14 L14 108 H28.5 C31.5 73 71 54 64 14 Z"/>
+    <path d="M64 14 C72 53 39 74 36.2 108 H58.2 C61.6 77 63.6 46 64 14 Z"/>
+    <path d="M64 14 C64.5 46 66.4 77 70 108 H91.8 C89.2 74 56.2 53 64 14 Z"/>
+    <path d="M64 14 C57 54 96.7 73 99.5 108 H114 L64 14 Z"/>
+  </g>
+</svg>
