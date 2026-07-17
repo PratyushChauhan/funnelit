@@ -1,6 +1,6 @@
 {
   "name": "sumeru-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CLI launcher for Sumeru MCP (downloads native binary from GitHub Releases)",
   "type": "module",
   "bin": {

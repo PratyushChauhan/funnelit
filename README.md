@@ -25,7 +25,7 @@ npm run tauri dev
 
 CI:
 - PRs / manual: `.github/workflows/build.yml` uploads installers as workflow artifacts
-- Push to `main`: `.github/workflows/release.yml` builds macOS (arm64 + x64) and Linux and publishes them to a [GitHub Release](https://github.com/PratyushChauhan/sumeru/releases) tagged `v__VERSION__` from `tauri.conf.json` (currently `v0.1.0`). Re-pushes with the same version update that release’s assets. Releases also include portable CLI binaries (`sumeru-v*-linux-x64`, `darwin-arm64`, `darwin-x64`) plus `.sha256` checksums. When `NPM_TOKEN` is set as a repo secret, the workflow publishes the [`sumeru-mcp`](packages/cli) npm package.
+- Push to `main`: `.github/workflows/release.yml` builds macOS (arm64 + x64) and Linux and publishes them to a [GitHub Release](https://github.com/PratyushChauhan/sumeru/releases) tagged `v__VERSION__` from `tauri.conf.json` (currently `v0.2.0`). Re-pushes with the same version update that release’s assets. Releases also include portable CLI binaries (`sumeru-v*-linux-x64`, `darwin-arm64`, `darwin-x64`) plus `.sha256` checksums. When `NPM_TOKEN` is set as a repo secret, the workflow publishes the [`sumeru-mcp`](packages/cli) npm package.
 
 ## npm CLI
 
