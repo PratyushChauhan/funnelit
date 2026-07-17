@@ -40,6 +40,7 @@ impl ClientPool {
         Self::default()
     }
 
+    /// Inputs: mcp id. Outputs: per-id mutex slot for the cached client.
     async fn slot(&self, id: &str) -> Slot {
         let mut slots = self.slots.lock().await;
         slots

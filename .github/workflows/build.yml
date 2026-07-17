@@ -14,10 +14,13 @@ jobs:
         include:
           - platform: macos-latest
             args: --target aarch64-apple-darwin
+            artifact: macos-aarch64
           - platform: macos-latest
             args: --target x86_64-apple-darwin
+            artifact: macos-x86_64
           - platform: ubuntu-22.04
             args: ""
+            artifact: linux-x64
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -49,4 +52,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: ${{ matrix.args }}
-          uploadWorkflowArtifacts: true
+          uploadWorkflowArtifacts: false
+
+      - name: Strip bundled Wayland libs from AppImage
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get install -y libfuse2 || true
+          chmod +x scripts/strip-appimage-wayland.sh
+          ./scripts/strip-appimage-wayland.sh src-tauri/target/release/bundle/appimage
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: funnelit-${{ matrix.artifact }}
+          path: |
+            src-tauri/target/**/release/bundle/**
+            src-tauri/target/**/release/funnelit
+            src-tauri/target/**/release/funnelit.exe
+          if-no-files-found: warn

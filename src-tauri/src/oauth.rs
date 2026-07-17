@@ -25,6 +25,7 @@ pub const REDIRECT_URI: &str = "http://127.0.0.1:7342/oauth/callback";
 const BIND_ADDR: &str = "127.0.0.1:7342";
 const CALLBACK_TIMEOUT: Duration = Duration::from_secs(300);
 
+/// Inputs: none. Outputs: process-wide mutex serializing browser OAuth flows.
 fn oauth_mutex() -> &'static Mutex<()> {
     static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
     LOCK.get_or_init(|| Mutex::new(()))
@@ -381,6 +382,10 @@ fn secret_for_client_id(
     })
 }
 
+/// Resolve OAuth client credentials for an MCP.
+///
+/// Inputs: MCP URL, id, AS metadata, optional credentials.
+/// Outputs: client id and optional secret (BYO, saved, host-scoped, or DCR).
 async fn resolve_client(
     url: &str,
     mcp_id: &str,
@@ -388,7 +393,6 @@ async fn resolve_client(
     client_id: Option<String>,
     client_secret: Option<String>,
 ) -> Result<(String, Option<String>), String> {
-    // Path 1: bring-your-own app credentials from Advanced (or matching saved secret).
     if let Some(id) = client_id {
         let secret = secret_for_client_id(
             &id,
@@ -398,7 +402,6 @@ async fn resolve_client(
         );
         return Ok((id, secret));
     }
-    // Reuse credentials from a previous sign-in for this MCP / host.
     if let Some(id) = config::get_oauth_client_id(mcp_id) {
         return Ok((
             id,
@@ -415,7 +418,6 @@ async fn resolve_client(
             client_secret.or_else(|| config::get_oauth_host_client_secret(&host)),
         ));
     }
-    // Path 2: Dynamic Client Registration when the AS supports it.
     if let Some(reg) = &as_meta.registration_endpoint {
         return register_client(reg).await;
     }
@@ -425,11 +427,13 @@ async fn resolve_client(
         .into())
 }
 
+/// Inputs: MCP URL. Outputs: host-scoped OAuth client id when previously saved.
 fn host_client_id(url: &str) -> Option<String> {
     let host = Url::parse(url).ok()?.host_str()?.to_string();
     config::get_oauth_host_client_id(&host)
 }
 
+/// Inputs: DCR registration endpoint. Outputs: new client id and optional secret.
 async fn register_client(endpoint: &str) -> Result<(String, Option<String>), String> {
     let client = http_client()?;
     let body = serde_json::json!({
@@ -461,6 +465,10 @@ async fn register_client(endpoint: &str) -> Result<(String, Option<String>), Str
     Ok((reg.client_id, reg.client_secret))
 }
 
+/// Build the browser authorization URL (PKCE S256 + resource indicator).
+///
+/// Inputs: authorize endpoint, client id, scopes, PKCE challenge, state, resource.
+/// Outputs: browser authorization URL.
 fn build_authorize_url(
     endpoint: &str,
     client_id: &str,
@@ -481,12 +489,13 @@ fn build_authorize_url(
         if !scopes.is_empty() {
             q.append_pair("scope", &scopes.join(" "));
         }
-        // MCP resource indicator when supported; harmless if ignored.
         q.append_pair("resource", resource);
     }
     Ok(url.to_string())
 }
 
+/// Inputs: token endpoint, client credentials, auth code, PKCE verifier, resource.
+/// Outputs: access token and optional refresh token.
 async fn exchange_code(
     token_endpoint: &str,
     client_id: &str,
@@ -547,6 +556,7 @@ async fn exchange_code(
     })
 }
 
+/// Inputs: callback state and query params. Outputs: HTML page; sends code via oneshot.
 async fn oauth_callback(
     AxumState(state): AxumState<CallbackState>,
     Query(params): Query<HashMap<String, String>>,
@@ -573,6 +583,7 @@ async fn oauth_callback(
     )
 }
 
+/// Inputs: MCP URL and optional resource name. Outputs: UI sign-in button label.
 fn sign_in_label(url: &str, resource_name: Option<&str>) -> String {
     if let Ok(parsed) = Url::parse(url) {
         if parsed.host_str().is_some_and(|h| h.contains("slack")) {
@@ -585,21 +596,25 @@ fn sign_in_label(url: &str, resource_name: Option<&str>) -> String {
     "Sign in".into()
 }
 
+/// Inputs: none. Outputs: high-entropy PKCE code verifier.
 fn pkce_verifier() -> String {
     random_token(32)
 }
 
+/// Inputs: PKCE verifier. Outputs: S256 code challenge (base64url).
 fn pkce_challenge(verifier: &str) -> String {
     let hash = Sha256::digest(verifier.as_bytes());
     URL_SAFE_NO_PAD.encode(hash)
 }
 
+/// Inputs: byte length. Outputs: URL-safe base64 random token.
 fn random_token(bytes: usize) -> String {
     let mut buf = vec![0u8; bytes];
     rand::rng().fill_bytes(&mut buf);
     URL_SAFE_NO_PAD.encode(buf)
 }
 
+/// Inputs: none. Outputs: reqwest client for OAuth HTTP calls.
 fn http_client() -> Result<reqwest::Client, String> {
     reqwest::Client::builder()
         .redirect(reqwest::redirect::Policy::limited(5))

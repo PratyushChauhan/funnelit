@@ -1,3 +1,8 @@
+<!--
+  @component
+  Inputs: servers list, refresh callback.
+  Outputs: DCR marketplace browse + one-click install.
+-->
 <script>
   import * as api from "$lib/api.js";
   import {
@@ -11,10 +16,6 @@
   import * as Card from "$lib/components/ui/card/index.js";
   import ProviderIcon from "./ProviderIcon.svelte";
 
-  /**
-   * Inputs: servers list, refresh callback.
-   * Outputs: DCR marketplace browse + one-click install.
-   */
   let { servers = [], refresh } = $props();
 
   const entries = listMarketplaceEntries();
@@ -22,7 +23,10 @@
   let installingId = $state("");
   let msg = $state("");
   let msgTone = $state("");
-  /** URLs saved via upsert even if parent refresh fails. */
+  /**
+   * Inputs: none.
+   * Outputs: URLs saved via upsert even if parent refresh fails.
+   */
   let justInstalledUrls = $state([]);
 
   const visible = $derived(filterMarketplaceEntries(entries, query));

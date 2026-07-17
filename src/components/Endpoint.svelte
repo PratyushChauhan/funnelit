@@ -1,3 +1,8 @@
+<!--
+  @component
+  Inputs: status, token, autostart, refresh callback.
+  Outputs: endpoint panel UI events.
+-->
 <script>
   import * as api from "$lib/api.js";
   import { Button } from "$lib/components/ui/button/index.js";
@@ -7,10 +12,6 @@
   import * as Card from "$lib/components/ui/card/index.js";
   import { Separator } from "$lib/components/ui/separator/index.js";
 
-  /**
-   * Inputs: status, token, autostart, refresh callback.
-   * Outputs: endpoint panel UI events.
-   */
   let { status, token, autostart = $bindable(false), refresh } = $props();
 
   let revealToken = $state(false);

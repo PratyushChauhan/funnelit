@@ -76,6 +76,11 @@ export const startMcpOauth = (args) => invoke("start_mcp_oauth", args);
 export const openUrl = (url) => invoke("open_url", { url });
 
 /**
+ * Inputs: none. Outputs: local VitePress docs URL after starting the static server.
+ */
+export const openDocs = () => invoke("open_docs");
+
+/**
  * Inputs: none. Outputs: absolute path to the funnelit binary for stdio MCP.
  */
 export const mcpStdioCommand = () => invoke("mcp_stdio_command");

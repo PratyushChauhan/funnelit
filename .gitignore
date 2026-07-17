@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+src-tauri/resources/docs
+docs/.vitepress/cache
+docs/.vitepress/dist
 
 # Editor directories and files
 .vscode/*

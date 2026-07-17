@@ -278,6 +278,7 @@ fn bearer_ok(headers: &HeaderMap, expected: &str) -> bool {
         .is_some_and(|t| ct_eq(t, expected))
 }
 
+/// Inputs: app state and request. Outputs: 403/401 or the downstream response.
 async fn auth_middleware(
     axum::extract::State(app): axum::extract::State<Arc<AppInner>>,
     req: Request,
@@ -302,8 +303,10 @@ async fn auth_middleware(
     next.run(req).await
 }
 
-/// Soft GET SSE: rmcp stateless returns 405; Cursor peers use GET 200 keep-alive.
-/// POST stays on rmcp stateless JSON.
+/// Soft GET SSE for Cursor peers (rmcp stateless would return 405; POST stays JSON).
+///
+/// Inputs: request.
+/// Outputs: keep-alive SSE for GET, else next middleware.
 async fn soft_get_sse(req: Request, next: Next) -> Response {
     if req.method() != Method::GET {
         return next.run(req).await;

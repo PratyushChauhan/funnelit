@@ -161,10 +161,12 @@ pub fn rotate_endpoint_token() -> Result<String, ConfigError> {
     Ok(token)
 }
 
+/// Inputs: keyring user fragment. Outputs: percent-escaped fragment safe for `:`.
 fn encode_part(value: &str) -> String {
     value.replace('%', "%25").replace(':', "%3A")
 }
 
+/// Inputs: secret kind, mcp id, key name. Outputs: keyring user id string.
 fn secret_user(kind: &str, mcp_id: &str, key: &str) -> String {
     format!("{kind}:{}:{}", encode_part(mcp_id), encode_part(key))
 }
@@ -192,6 +194,7 @@ pub fn store_secrets(mcp_id: &str, secrets: &SecretMap) -> Result<(), ConfigErro
     Ok(())
 }
 
+/// Inputs: keyring user id. Outputs: Ok when deleted or already absent.
 fn delete_secret_entry(user: &str) -> Result<(), ConfigError> {
     match keyring::Entry::new(SERVICE, user).and_then(|e| e.delete_credential()) {
         Ok(()) | Err(keyring::Error::NoEntry) => Ok(()),
@@ -232,6 +235,7 @@ pub fn prune_secrets(previous: &McpServer, next: &McpServer) -> Result<(), Confi
     )
 }
 
+/// Inputs: server record. Outputs: env keys, header keys, and whether bearer is set.
 fn secret_keysets(server: &McpServer) -> (HashSet<String>, HashSet<String>, bool) {
     match &server.transport {
         McpTransport::Stdio { env_keys, .. } => {
@@ -268,11 +272,13 @@ pub fn get_bearer_secret(mcp_id: &str) -> Option<String> {
     get_header_secret(mcp_id, "authorization_bearer")
 }
 
+/// Inputs: keyring user id and value. Outputs: unit after keychain write.
 fn set_secret(user: &str, value: &str) -> Result<(), ConfigError> {
     keyring::Entry::new(SERVICE, user)?.set_password(value)?;
     Ok(())
 }
 
+/// Inputs: keyring user id. Outputs: non-empty secret when present.
 fn get_secret(user: &str) -> Option<String> {
     keyring::Entry::new(SERVICE, user)
         .ok()

@@ -1,3 +1,8 @@
+<!--
+  @component
+  Inputs: open flag, optional server, saved callback.
+  Outputs: MCP editor dialog with OAuth probe/sign-in.
+-->
 <script>
   import { tick } from "svelte";
   import * as api from "$lib/api.js";
@@ -13,10 +18,6 @@
   import { Switch } from "$lib/components/ui/switch/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
 
-  /**
-   * Inputs: open flag, optional server, saved callback.
-   * Outputs: MCP editor dialog with OAuth probe/sign-in.
-   */
   let { open = $bindable(false), server = null, onSaved } = $props();
 
   let editId = $state("");

@@ -1,0 +1,31 @@
+{
+  "name": "funnelit",
+  "version": "0.1.0",
+  "description": "CLI launcher for Funnelit MCP stdio (downloads native binary from GitHub Releases)",
+  "type": "module",
+  "bin": {
+    "funnelit": "bin/funnelit.js"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PratyushChauhan/funnelit.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/PratyushChauhan/funnelit#readme",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "funnelit",
+    "cli"
+  ],
+  "scripts": {
+    "test": "node --test lib/*.test.js"
+  }
+}

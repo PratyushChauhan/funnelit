@@ -2,6 +2,10 @@
 
 Local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URLs) and expose them through one authenticated Streamable HTTP endpoint.
 
+**Docs:** [GitHub Pages](https://pratyushchauhan.github.io/funnelit/) · in the app, **Docs** serves the same VitePress site locally at `http://127.0.0.1:7343`. Source is [`docs/`](docs/). Preview with `npm run docs:dev`.
+
+**Linux AppImage on Wayland:** if you see `EGL_BAD_PARAMETER`, run with `LD_PRELOAD=/usr/lib/libwayland-client.so ./funnelit_*.AppImage` (or use the `.deb` / `.tar.gz`). Newer builds also re-exec with the host Wayland client automatically. See Docs → Linux.
+
 ## Run
 
 Frontend is Svelte 5 + Vite + [shadcn-svelte](https://www.shadcn-svelte.com/) (Rhea / mist). Dev/build are wired through Tauri:
@@ -13,7 +17,32 @@ npm run tauri dev
 
 CI:
 - PRs / manual: `.github/workflows/build.yml` uploads installers as workflow artifacts
-- Push to `main`: `.github/workflows/release.yml` builds macOS (arm64 + x64) and Linux and publishes them to a [GitHub Release](https://github.com/PratyushChauhan/funnelit/releases) tagged `v__VERSION__` from `tauri.conf.json` (currently `v0.1.0`). Re-pushes with the same version update that release’s assets.
+- Push to `main`: `.github/workflows/release.yml` builds macOS (arm64 + x64) and Linux and publishes them to a [GitHub Release](https://github.com/PratyushChauhan/funnelit/releases) tagged `v__VERSION__` from `tauri.conf.json` (currently `v0.1.0`). Re-pushes with the same version update that release’s assets. Releases also include portable CLI binaries (`funnelit-v*-linux-x64`, `darwin-arm64`, `darwin-x64`) plus `.sha256` checksums. When `NPM_TOKEN` is set as a repo secret, the workflow publishes the [`packages/cli`](packages/cli) npm package.
+
+## npm CLI
+
+Install the launcher (downloads the matching portable binary on first run):
+
+```bash
+npm i -g funnelit
+funnelit doctor
+funnelit mcp-stdio   # or just: funnelit
+```
+
+Cursor / MCP host stdio config example:
+
+```json
+{
+  "mcpServers": {
+    "funnelit": {
+      "command": "funnelit",
+      "args": ["mcp-stdio"]
+    }
+  }
+}
+```
+
+Overrides: `FUNNELIT_BINARY` (local binary path), `FUNNELIT_VERSION`, `FUNNELIT_CACHE_DIR`.
 
 ## Funnel endpoint
 

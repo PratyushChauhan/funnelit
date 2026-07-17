@@ -17,10 +17,16 @@ jobs:
         include:
           - platform: macos-latest
             args: --target aarch64-apple-darwin
+            binary: src-tauri/target/aarch64-apple-darwin/release/funnelit
+            cli_suffix: darwin-arm64
           - platform: macos-latest
             args: --target x86_64-apple-darwin
+            binary: src-tauri/target/x86_64-apple-darwin/release/funnelit
+            cli_suffix: darwin-x64
           - platform: ubuntu-22.04
             args: ""
+            binary: src-tauri/target/release/funnelit
+            cli_suffix: linux-x64
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -53,7 +59,77 @@ jobs:
         with:
           tagName: ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__' }}
           releaseName: funnelit ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__' }}
-          releaseBody: Desktop builds for macOS and Linux.
+          releaseBody: Desktop builds and portable CLI binaries for macOS and Linux.
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
+
+      - name: Strip bundled Wayland libs from AppImage
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get install -y libfuse2 || true
+          chmod +x scripts/strip-appimage-wayland.sh
+          ./scripts/strip-appimage-wayland.sh src-tauri/target/release/bundle/appimage
+          VERSION=$(jq -r .version src-tauri/tauri.conf.json)
+          TAG="v${VERSION}"
+          APPIMAGE=$(ls src-tauri/target/release/bundle/appimage/*.AppImage | head -n1)
+          gh release upload "${TAG}" "${APPIMAGE}" --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload portable CLI binary
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          VERSION=$(jq -r .version src-tauri/tauri.conf.json)
+          TAG="v${VERSION}"
+          NAME="funnelit-v${VERSION}-${{ matrix.cli_suffix }}"
+          mkdir -p dist-cli
+          cp "${{ matrix.binary }}" "dist-cli/${NAME}"
+          chmod +x "dist-cli/${NAME}"
+          if command -v strip >/dev/null; then
+            strip "dist-cli/${NAME}" || true
+            if command -v codesign >/dev/null; then
+              codesign --force --sign - "dist-cli/${NAME}" || true
+            fi
+          fi
+          (
+            cd dist-cli
+            if command -v sha256sum >/dev/null; then
+              sha256sum "${NAME}" > "${NAME}.sha256"
+            else
+              shasum -a 256 "${NAME}" > "${NAME}.sha256"
+            fi
+          )
+          gh release upload "${TAG}" "dist-cli/${NAME}" "dist-cli/${NAME}.sha256" --clobber
+
+  publish-npm:
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          registry-url: https://registry.npmjs.org
+
+      - name: Sync CLI package version
+        run: |
+          VERSION=$(jq -r .version src-tauri/tauri.conf.json)
+          jq --arg v "$VERSION" '.version = $v' packages/cli/package.json > packages/cli/package.json.tmp
+          mv packages/cli/package.json.tmp packages/cli/package.json
+
+      - name: Publish npm package
+        working-directory: packages/cli
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "NPM_TOKEN not set; skip npm publish (manual publish OK)"
+            exit 0
+          fi
+          npm publish --access public

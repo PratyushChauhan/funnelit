@@ -1,3 +1,8 @@
+<!--
+  @component
+  Inputs: servers list, edit/refresh callbacks.
+  Outputs: MCP list actions.
+-->
 <script>
   import * as api from "$lib/api.js";
   import { providerIconForUrl } from "$lib/marketplace-icons.js";
@@ -5,10 +10,6 @@
   import * as Card from "$lib/components/ui/card/index.js";
   import ProviderIcon from "./ProviderIcon.svelte";
 
-  /**
-   * Inputs: servers list, edit/refresh callbacks.
-   * Outputs: MCP list actions.
-   */
   let { servers = [], onEdit, refresh } = $props();
 
   /**

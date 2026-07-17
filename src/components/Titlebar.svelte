@@ -1,16 +1,21 @@
+<!--
+  @component
+  Inputs: none.
+  Outputs: frameless chrome — drag region + min/max/close (close hides to tray).
+-->
 <script>
   import { getCurrentWindow } from "@tauri-apps/api/window";
   import MinusIcon from "@lucide/svelte/icons/minus";
   import SquareIcon from "@lucide/svelte/icons/square";
   import XIcon from "@lucide/svelte/icons/x";
 
-  /** Frameless window chrome: drag region + min/max/close (close still hides to tray). */
   const win = getCurrentWindow();
   const btn =
     "inline-flex size-9 items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground";
 
   /**
-   * Inputs: window action promise. Outputs: alert on failure.
+   * Inputs: window action promise.
+   * Outputs: alert on failure.
    */
   function act(p) {
     p.catch((e) => alert(String(e)));

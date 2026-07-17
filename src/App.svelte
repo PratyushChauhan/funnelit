@@ -57,6 +57,17 @@
     editorOpen = true;
   }
 
+  /**
+   * Inputs: none. Outputs: local docs server started and opened in the browser.
+   */
+  async function onDocs() {
+    try {
+      await api.openDocs();
+    } catch (e) {
+      alert(String(e));
+    }
+  }
+
   onMount(() => {
     (async () => {
       for (let i = 0; i < 25; i++) {
@@ -92,6 +103,7 @@
       {/if}
       {status.running ? "running" : "stopped"}
     </Badge>
+    <Button variant="ghost" onclick={onDocs}>Docs</Button>
     <Button variant="ghost" onclick={onToggle}>
       {status.running ? "Pause" : "Resume"}
     </Button>

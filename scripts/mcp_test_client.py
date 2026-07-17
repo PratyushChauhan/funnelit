@@ -50,6 +50,7 @@ class McpClient:
         self.session_id: str | None = None
 
     def _headers(self, accept: str, content: bool = False) -> dict[str, str]:
+        """Inputs: Accept value and whether a body is sent. Outputs: request headers."""
         h = {
             "Authorization": f"Bearer {self.token}",
             "Accept": accept,
@@ -242,6 +243,7 @@ def run_lifecycle(
 
 
 def main() -> int:
+    """Inputs: CLI argv/env. Outputs: process exit code (0 on pass)."""
     p = argparse.ArgumentParser(description="Funnelit Streamable HTTP MCP test client")
     p.add_argument("--url", default=os.environ.get("FUNNELIT_URL", DEFAULT_URL))
     p.add_argument("--token", default=os.environ.get("FUNNELIT_TOKEN"))

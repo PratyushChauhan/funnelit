@@ -1,4 +1,5 @@
 mod config;
+mod docs_server;
 mod gateway;
 mod oauth;
 mod pool;
@@ -74,6 +75,20 @@ pub fn run_mcp_stdio() {
             eprintln!("funnelit mcp-stdio: {err}");
             std::process::exit(1);
         }
+    });
+}
+
+/// Inputs: none. Outputs: GLib default log handler that drops ayatana deprecation noise.
+///
+/// Tauri's Linux tray still uses libayatana-appindicator; the library logs a
+/// deprecation warning on every tray create. Filter only that message.
+#[cfg(target_os = "linux")]
+fn silence_ayatana_deprecation() {
+    glib::log_set_default_handler(|domain, level, message| {
+        if domain == Some("libayatana-appindicator") && message.contains("is deprecated") {
+            return;
+        }
+        glib::log_default_handler(domain, level, Some(message));
     });
 }
 
@@ -268,6 +283,12 @@ fn open_url(url: String) -> Result<(), String> {
     open::that(url).map_err(|e| e.to_string())
 }
 
+/// Inputs: app handle. Outputs: local VitePress docs URL after starting the static server.
+#[tauri::command]
+async fn open_docs(app: tauri::AppHandle) -> Result<String, String> {
+    docs_server::ensure_and_open(&app).await
+}
+
 /// Inputs: mcp id. Outputs: Ok message or connection error.
 #[tauri::command]
 async fn test_server(state: tauri::State<'_, State>, id: String) -> Result<String, String> {
@@ -339,6 +360,7 @@ async fn test_draft(
         .map_err(|e| redact(&e.to_string()))
 }
 
+/// Inputs: none. Outputs: runs the Tauri desktop app (tray, autostart, gateway).
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -360,6 +382,9 @@ pub fn run() {
                     eprintln!("funnelit auto-start failed: {err}");
                 }
             });
+
+            #[cfg(target_os = "linux")]
+            silence_ayatana_deprecation();
 
             let open = MenuItem::with_id(app, "open", "Open", true, None::<&str>)?;
             let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
@@ -406,6 +431,7 @@ pub fn run() {
             get_autostart,
             set_autostart,
             open_url,
+            open_docs,
             probe_mcp_auth,
             start_mcp_oauth,
             test_server,
