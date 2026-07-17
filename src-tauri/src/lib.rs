@@ -1,4 +1,5 @@
 mod config;
+mod docs_server;
 mod gateway;
 mod oauth;
 mod pool;
@@ -282,6 +283,12 @@ fn open_url(url: String) -> Result<(), String> {
     open::that(url).map_err(|e| e.to_string())
 }
 
+/// Inputs: app handle. Outputs: local VitePress docs URL after starting the static server.
+#[tauri::command]
+async fn open_docs(app: tauri::AppHandle) -> Result<String, String> {
+    docs_server::ensure_and_open(&app).await
+}
+
 /// Inputs: mcp id. Outputs: Ok message or connection error.
 #[tauri::command]
 async fn test_server(state: tauri::State<'_, State>, id: String) -> Result<String, String> {
@@ -424,6 +431,7 @@ pub fn run() {
             get_autostart,
             set_autostart,
             open_url,
+            open_docs,
             probe_mcp_auth,
             start_mcp_oauth,
             test_server,

@@ -12,4 +12,4 @@ Funnelit is a local desktop MCP funnel. Add N upstream MCP servers (stdio comman
 
 ## Where to go next
 
-Use the sidebar: **Getting started**, **Endpoint**, then **Cookbook** recipes for Cursor, OAuth, marketplace, and more.
+Use the left nav: **Guides**, shared **Cookbook** recipes, then platform cookbooks (**Linux** / **macOS**) for install and startup.

@@ -30,6 +30,7 @@ rmcp = { version = "2.2", features = [
   "reqwest",
 ] }
 axum = "0.8"
+tower-http = { version = "0.6", features = ["fs"] }
 tokio = { version = "1", features = ["net", "process", "sync", "time", "rt-multi-thread", "macros"] }
 tokio-stream = "0.1"
 tokio-util = "0.7"

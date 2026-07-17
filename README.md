@@ -2,7 +2,9 @@
 
 Local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URLs) and expose them through one authenticated Streamable HTTP endpoint.
 
-**Docs:** In the app, open **Docs** for Guides and a Cookbook (also under [`docs/`](docs/) in the repo).
+**Docs:** [GitHub Pages](https://pratyushchauhan.github.io/funnelit/) · in the app, **Docs** serves the same VitePress site locally at `http://127.0.0.1:7343`. Source is [`docs/`](docs/). Preview with `npm run docs:dev`.
+
+**Linux AppImage on Wayland:** if you see `EGL_BAD_PARAMETER`, run with `LD_PRELOAD=/usr/lib/libwayland-client.so ./funnelit_*.AppImage` (or use the `.deb` / `.tar.gz`). Newer builds also re-exec with the host Wayland client automatically. See Docs → Linux.
 
 ## Run
 

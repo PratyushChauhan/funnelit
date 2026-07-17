@@ -7,6 +7,7 @@
 
 Funnelit should start hidden in the tray with `--hidden`. Open from the tray to configure.
 
-## Linux note
+Platform details:
 
-Autostart writes `~/.config/autostart/*.desktop` pointing at the current binary. If you enabled it from a debug build under `target/debug/`, re-enable from the installed binary so the path stays stable.
+- **Linux** — XDG autostart desktop entry (see Linux cookbook)
+- **macOS** — Launch Agent (see macOS cookbook)
