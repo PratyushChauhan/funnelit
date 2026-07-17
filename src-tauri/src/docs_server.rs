@@ -3,6 +3,8 @@
 use std::{
     path::PathBuf,
     sync::atomic::{AtomicBool, Ordering},
+    thread,
+    time::Duration,
 };
 
 use axum::Router;
@@ -34,27 +36,67 @@ fn resolve_docs_root(app: &AppHandle) -> Result<PathBuf, String> {
     )
 }
 
+/// Inputs: none. Outputs: true when HTTP GET / returns any response.
+async fn docs_reachable() -> bool {
+    let Ok(client) = reqwest::Client::builder()
+        .timeout(Duration::from_millis(400))
+        .build()
+    else {
+        return false;
+    };
+    client.get(URL).send().await.map(|r| r.status().is_success()).unwrap_or(false)
+}
+
 /// Inputs: app handle. Outputs: docs URL after ensuring the local server is listening.
 pub async fn ensure_and_open(app: &AppHandle) -> Result<String, String> {
     let root = resolve_docs_root(app)?;
-    if !STARTED.swap(true, Ordering::SeqCst) {
-        let listener = tokio::net::TcpListener::bind(BIND)
-            .await
-            .map_err(|e| {
-                STARTED.store(false, Ordering::SeqCst);
-                format!("docs server bind {BIND}: {e}")
-            })?;
-        let router = Router::new().fallback_service(
-            ServeDir::new(root).append_index_html_on_directories(true),
-        );
-        // Same pattern as the MCP gateway — tokio::spawn on the command runtime.
-        tokio::spawn(async move {
-            if let Err(err) = axum::serve(listener, router).await {
-                eprintln!("funnelit docs server exited: {err}");
-                STARTED.store(false, Ordering::SeqCst);
+    if !STARTED.load(Ordering::SeqCst) {
+        let root_thread = root.clone();
+        thread::Builder::new()
+            .name("funnelit-docs".into())
+            .spawn(move || {
+                let rt = match tokio::runtime::Builder::new_current_thread()
+                    .enable_all()
+                    .build()
+                {
+                    Ok(rt) => rt,
+                    Err(err) => {
+                        eprintln!("funnelit docs runtime: {err}");
+                        return;
+                    }
+                };
+                rt.block_on(async move {
+                    let listener = match tokio::net::TcpListener::bind(BIND).await {
+                        Ok(l) => l,
+                        Err(err) => {
+                            eprintln!("funnelit docs bind {BIND}: {err}");
+                            return;
+                        }
+                    };
+                    STARTED.store(true, Ordering::SeqCst);
+                    let router = Router::new().fallback_service(
+                        ServeDir::new(root_thread).append_index_html_on_directories(true),
+                    );
+                    if let Err(err) = axum::serve(listener, router).await {
+                        eprintln!("funnelit docs server exited: {err}");
+                        STARTED.store(false, Ordering::SeqCst);
+                    }
+                });
+            })
+            .map_err(|e| format!("docs server thread: {e}"))?;
+
+        for _ in 0..40 {
+            if docs_reachable().await {
+                break;
             }
-        });
-        tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        }
+        if !docs_reachable().await {
+            return Err(format!(
+                "docs server started but {URL} is not responding (root {})",
+                root.display()
+            ));
+        }
     }
     open::that(URL).map_err(|e| e.to_string())?;
     Ok(URL.to_string())
