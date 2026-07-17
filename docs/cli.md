@@ -3,7 +3,7 @@
 Install the npm launcher (downloads the matching portable binary on first run):
 
 ```bash
-npm i -g sumeru
+npm i -g sumeru-mcp
 sumeru doctor
 sumeru mcp-stdio   # or just: sumeru
 sumeru gui         # desktop UI

@@ -1,6 +1,6 @@
 # Getting started
 
-1. Launch Sumeru (install from [GitHub Releases](https://github.com/PratyushChauhan/sumeru/releases), or `npm i -g sumeru && sumeru gui`). The funnel starts automatically and keeps running in the tray when you close the window.
+1. Launch Sumeru (install from [GitHub Releases](https://github.com/PratyushChauhan/sumeru/releases), or `npm i -g sumeru-mcp && sumeru gui`). The funnel starts automatically and keeps running in the tray when you close the window.
 2. Open **Configure**. Copy the endpoint URL and bearer token.
 
 ![Configure tab with running badge, endpoint URL, and bearer token](/images/configure.png)

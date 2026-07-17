@@ -38,4 +38,4 @@ If you prefer stdio instead of HTTP:
 }
 ```
 
-Install the CLI with `npm i -g sumeru` first (or point `SUMERU_BINARY` at a local build).
+Install the CLI with `npm i -g sumeru-mcp` first (or point `SUMERU_BINARY` at a local build).

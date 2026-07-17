@@ -1,7 +1,7 @@
 {
-  "name": "sumeru",
+  "name": "sumeru-mcp",
   "version": "0.1.0",
-  "description": "CLI launcher for Sumeru MCP stdio (downloads native binary from GitHub Releases)",
+  "description": "CLI launcher for Sumeru MCP (downloads native binary from GitHub Releases)",
   "type": "module",
   "bin": {
     "sumeru": "bin/sumeru.js"
@@ -23,6 +23,7 @@
   "keywords": [
     "mcp",
     "sumeru",
+    "sumeru-mcp",
     "cli"
   ],
   "scripts": {
