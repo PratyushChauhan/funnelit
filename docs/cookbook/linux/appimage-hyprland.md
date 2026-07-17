@@ -16,11 +16,11 @@ Reload Hyprland after changing it.
 
 ## Wrapper script
 
-Save as `~/bin/funnelit` (or any path on your `PATH`), set the AppImage path, then `chmod +x`:
+Save as `~/bin/sumeru` (or any path on your `PATH`), set the AppImage path, then `chmod +x`:
 
 ```bash
 #!/usr/bin/env bash
-# Funnelit AppImage forces GDK_BACKEND=x11 (Wayland crashes).
+# Sumeru AppImage forces GDK_BACKEND=x11 (Wayland crashes).
 # On Hyprland 1.5x scaling that looks soft unless XWayland force_zero_scaling
 # is on and we render at integer 2x with DPI adjusted to ~1.5.
 set -euo pipefail
@@ -31,10 +31,10 @@ export WEBKIT_DISABLE_COMPOSITING_MODE=1
 export GDK_SCALE=2
 export GDK_DPI_SCALE=0.75
 
-exec /path/to/funnelit.AppImage "$@"
+exec /path/to/sumeru.AppImage "$@"
 ```
 
-Replace `/path/to/funnelit.AppImage` with your real AppImage path.
+Replace `/path/to/sumeru.AppImage` with your real AppImage path.
 
 ## What the env vars do
 

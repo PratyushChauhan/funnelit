@@ -22,21 +22,21 @@ use tauri_plugin_autostart::ManagerExt;
 use uuid::Uuid;
 
 /// Bundle id from `tauri.conf.json` — must match GUI `app_config_dir()`.
-const APP_IDENTIFIER: &str = "com.funnelit.app";
+const APP_IDENTIFIER: &str = "com.sumeru.app";
 
-/// Inputs: none. Outputs: same path as Tauri `app_config_dir()/funnelit`, or error.
-fn funnelit_config_dir() -> Result<PathBuf, String> {
+/// Inputs: none. Outputs: same path as Tauri `app_config_dir()/sumeru`, or error.
+fn sumeru_config_dir() -> Result<PathBuf, String> {
     let base = dirs::config_dir().ok_or_else(|| {
         "could not resolve app config directory (no HOME / platform config path)".to_string()
     })?;
-    Ok(base.join(APP_IDENTIFIER).join("funnelit"))
+    Ok(base.join(APP_IDENTIFIER).join("sumeru"))
 }
 
-/// Inputs: none. Outputs: preferred path for Cursor stdio MCP (`~/.local/bin/funnelit` when present).
+/// Inputs: none. Outputs: preferred path for Cursor stdio MCP (`~/.local/bin/sumeru` when present).
 #[tauri::command]
 fn mcp_stdio_command() -> Result<String, String> {
     let stable = dirs::home_dir()
-        .map(|h| h.join(".local/bin/funnelit"))
+        .map(|h| h.join(".local/bin/sumeru"))
         .filter(|p| p.is_file());
     if let Some(p) = stable {
         return Ok(p.to_string_lossy().into_owned());
@@ -48,15 +48,15 @@ fn mcp_stdio_command() -> Result<String, String> {
 
 /// Inputs: none. Outputs: runs gateway tools over MCP stdio until EOF.
 pub fn run_mcp_stdio() {
-    let dir = match funnelit_config_dir() {
+    let dir = match sumeru_config_dir() {
         Ok(dir) => dir,
         Err(err) => {
-            eprintln!("funnelit mcp-stdio: {err}");
+            eprintln!("sumeru mcp-stdio: {err}");
             std::process::exit(1);
         }
     };
     if let Err(err) = std::fs::create_dir_all(&dir) {
-        eprintln!("funnelit mcp-stdio: failed to create config directory: {err}");
+        eprintln!("sumeru mcp-stdio: failed to create config directory: {err}");
         std::process::exit(1);
     }
     let rt = tokio::runtime::Builder::new_multi_thread()
@@ -67,12 +67,12 @@ pub fn run_mcp_stdio() {
         let inner = match AppInner::for_stdio(dir) {
             Ok(inner) => Arc::new(inner),
             Err(err) => {
-                eprintln!("funnelit mcp-stdio: {err}");
+                eprintln!("sumeru mcp-stdio: {err}");
                 std::process::exit(1);
             }
         };
         if let Err(err) = gateway::serve_stdio(inner).await {
-            eprintln!("funnelit mcp-stdio: {err}");
+            eprintln!("sumeru mcp-stdio: {err}");
             std::process::exit(1);
         }
     });
@@ -224,7 +224,7 @@ async fn remove_server(state: tauri::State<'_, State>, id: String) -> Result<(),
             .and_then(|_| delete_oauth_secrets(&id)),
     };
     if let Err(err) = cleanup {
-        eprintln!("funnelit secret cleanup after remove failed: {err}");
+        eprintln!("sumeru secret cleanup after remove failed: {err}");
     }
     Ok(())
 }
@@ -373,13 +373,13 @@ pub fn run() {
                 .path()
                 .app_config_dir()
                 .expect("app config dir")
-                .join("funnelit");
+                .join("sumeru");
             std::fs::create_dir_all(&dir)?;
             let inner = Arc::new(AppInner::new(dir).map_err(|e| e.to_string())?);
             app.manage(State(inner.clone()));
             tauri::async_runtime::spawn(async move {
                 if let Err(err) = gateway::start(inner).await {
-                    eprintln!("funnelit auto-start failed: {err}");
+                    eprintln!("sumeru auto-start failed: {err}");
                 }
             });
 
@@ -391,7 +391,7 @@ pub fn run() {
             let menu = Menu::with_items(app, &[&open, &quit])?;
             let mut tray = TrayIconBuilder::new()
                 .menu(&menu)
-                .tooltip("funnelit")
+                .tooltip("sumeru")
                 .on_menu_event(|app, event| match event.id().as_ref() {
                     "open" => show_main(app),
                     "quit" => app.exit(0),

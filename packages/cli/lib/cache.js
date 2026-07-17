@@ -3,24 +3,24 @@ import os from "node:os";
 import path from "node:path";
 
 /**
- * Inputs: none. Outputs: directory for cached Funnelit binaries.
+ * Inputs: none. Outputs: directory for cached Sumeru binaries.
  */
 export function cacheDir() {
-  if (process.env.FUNNELIT_CACHE_DIR) {
-    return path.resolve(process.env.FUNNELIT_CACHE_DIR);
+  if (process.env.SUMERU_CACHE_DIR) {
+    return path.resolve(process.env.SUMERU_CACHE_DIR);
   }
   if (process.platform === "darwin") {
-    return path.join(os.homedir(), "Library", "Caches", "funnelit");
+    return path.join(os.homedir(), "Library", "Caches", "sumeru");
   }
   const xdg = process.env.XDG_CACHE_HOME || path.join(os.homedir(), ".cache");
-  return path.join(xdg, "funnelit");
+  return path.join(xdg, "sumeru");
 }
 
 /**
  * Inputs: version, platform key. Outputs: absolute path for cached binary.
  */
 export function cachedBinaryPath(version, key) {
-  return path.join(cacheDir(), `funnelit-v${version}-${key}`);
+  return path.join(cacheDir(), `sumeru-v${version}-${key}`);
 }
 
 /**

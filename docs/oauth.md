@@ -1,6 +1,6 @@
 # OAuth
 
-For HTTP MCPs that advertise OAuth (RFC 9728 / 8414), Funnelit shows **Sign in** and opens the provider login page in your browser. Tokens are stored in the keychain.
+For HTTP MCPs that advertise OAuth (RFC 9728 / 8414), Sumeru shows **Sign in** and opens the provider login page in your browser. Tokens are stored in the keychain.
 
 ## Paths
 

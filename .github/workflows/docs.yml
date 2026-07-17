@@ -34,7 +34,7 @@ jobs:
 
       - name: Build VitePress site
         env:
-          DOCS_BASE: /funnelit/
+          DOCS_BASE: /sumeru/
         run: npm run docs:build
 
       - uses: actions/upload-pages-artifact@v3

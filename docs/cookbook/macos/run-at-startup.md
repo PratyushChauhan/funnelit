@@ -1,11 +1,11 @@
 # Run at startup (macOS)
 
 1. Prefer the **installed** app from Applications (not `tauri dev`)
-2. Open Funnelit → **Configure**
+2. Open Sumeru → **Configure**
 3. Enable **Run at system startup**
 4. Log out and back in (or reboot)
 
-Funnelit starts hidden in the menu bar / tray with `--hidden`. Open from the tray to configure.
+Sumeru starts hidden in the menu bar / tray with `--hidden`. Open from the tray to configure.
 
 ## How it works
 

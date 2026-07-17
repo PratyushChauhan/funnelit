@@ -1,11 +1,11 @@
-# funnelit (npm CLI)
+# sumeru (npm CLI)
 
-Node launcher for Funnelit’s portable binary. Downloads from [GitHub Releases](https://github.com/PratyushChauhan/funnelit/releases) on first run.
+Node launcher for Sumeru’s portable binary. Downloads from [GitHub Releases](https://github.com/PratyushChauhan/sumeru/releases) on first run.
 
 ```bash
-npm i -g funnelit
-funnelit doctor
-funnelit mcp-stdio
+npm i -g sumeru
+sumeru doctor
+sumeru mcp-stdio
 ```
 
 See the [repo README](../../README.md#npm-cli) for Cursor config and env overrides.

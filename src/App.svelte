@@ -86,7 +86,7 @@
 
 <header class="flex items-center justify-between gap-4 max-sm:flex-col max-sm:items-start">
   <div>
-    <h1 class="text-2xl tracking-tight font-semibold m-0">funnelit</h1>
+    <h1 class="text-2xl tracking-tight font-semibold m-0">sumeru</h1>
     <p class="text-muted-foreground text-sm m-0">
       Configure here · funnel runs in the tray
     </p>

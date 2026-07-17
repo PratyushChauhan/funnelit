@@ -11,7 +11,7 @@ use rand::RngCore;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
-const SERVICE: &str = "funnelit";
+const SERVICE: &str = "sumeru";
 const TOKEN_USER: &str = "endpoint-token";
 pub const ENDPOINT_URL: &str = "http://127.0.0.1:7341/mcp";
 pub const BIND_ADDR: &str = "127.0.0.1:7341";

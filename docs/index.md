@@ -1,6 +1,6 @@
 # Overview
 
-Funnelit is a local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URLs) and expose them through one authenticated Streamable HTTP endpoint.
+Sumeru is a local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URLs) and expose them through one authenticated Streamable HTTP endpoint.
 
 ![Configure tab with running badge, endpoint URL, and bearer token](/images/configure.png)
 

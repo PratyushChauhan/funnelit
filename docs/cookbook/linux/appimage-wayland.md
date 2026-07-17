@@ -11,25 +11,25 @@ you are hitting a known Tauri AppImage + Wayland mismatch: the bundle can load a
 ## Quick workaround
 
 ```bash
-LD_PRELOAD=/usr/lib/libwayland-client.so ./funnelit_*.AppImage
+LD_PRELOAD=/usr/lib/libwayland-client.so ./sumeru_*.AppImage
 ```
 
 On Debian/Ubuntu multiarch layouts, try:
 
 ```bash
-LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libwayland-client.so.0 ./funnelit_*.AppImage
+LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libwayland-client.so.0 ./sumeru_*.AppImage
 ```
 
 Or force X11/XWayland:
 
 ```bash
-GDK_BACKEND=x11 ./funnelit_*.AppImage
+GDK_BACKEND=x11 ./sumeru_*.AppImage
 ```
 
 ## Alternatives
 
 - Use the `.deb` / `.rpm` / portable `x64.app.tar.gz` from the same release
-- Prefer a Funnelit build that re-execs with the host Wayland client on AppImage + Wayland (included in current `dev`)
+- Prefer a Sumeru build that re-execs with the host Wayland client on AppImage + Wayland (included in current `dev`)
 
 ## Hyprland + fractional scaling
 

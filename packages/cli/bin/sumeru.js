@@ -20,7 +20,7 @@ async function main(argv) {
     return;
   }
 
-  const version = process.env.FUNNELIT_VERSION || packageVersion();
+  const version = process.env.SUMERU_VERSION || packageVersion();
   const key = platformKey();
   if (!key) {
     throw new Error(
@@ -43,12 +43,12 @@ async function main(argv) {
     process.exit(code ?? 1);
   });
   child.on("error", (err) => {
-    console.error(`funnelit: failed to spawn ${bin}: ${err.message}`);
+    console.error(`sumeru: failed to spawn ${bin}: ${err.message}`);
     process.exit(1);
   });
 }
 
 main(process.argv.slice(2)).catch((err) => {
-  console.error(`funnelit: ${err.message || err}`);
+  console.error(`sumeru: ${err.message || err}`);
   process.exit(1);
 });

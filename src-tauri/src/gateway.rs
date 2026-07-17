@@ -131,7 +131,7 @@ struct McpInfo {
 #[tool_router]
 impl Gateway {
     /// Inputs: none. Outputs: configured MCP summaries.
-    #[tool(description = "List configured MCP servers available through Funnelit")]
+    #[tool(description = "List configured MCP servers available through Sumeru")]
     async fn list_mcps(&self) -> Result<CallToolResult, rmcp::ErrorData> {
         let cfg = self.app.config.read().await;
         let infos: Vec<McpInfo> = cfg
@@ -232,7 +232,7 @@ impl rmcp::ServerHandler for Gateway {
     fn get_info(&self) -> ServerInfo {
         ServerInfo::new(ServerCapabilities::builder().enable_tools().build())
             .with_server_info(Implementation::new(
-                "funnelit",
+                "sumeru",
                 env!("CARGO_PKG_VERSION"),
             ))
     }
@@ -348,7 +348,7 @@ fn gateway_router(app: Arc<AppInner>, child: CancellationToken) -> Router {
         .layer(middleware::from_fn_with_state(app, auth_middleware))
 }
 
-/// Inputs: bearer token. Outputs: true when Funnelit on BIND_ADDR answers initialize.
+/// Inputs: bearer token. Outputs: true when Sumeru on BIND_ADDR answers initialize.
 pub async fn existing_endpoint_healthy(token: &str) -> bool {
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(2))
@@ -363,7 +363,7 @@ pub async fn existing_endpoint_healthy(token: &str) -> bool {
         "params": {
             "protocolVersion": "2025-03-26",
             "capabilities": {},
-            "clientInfo": { "name": "funnelit-health", "version": "0" }
+            "clientInfo": { "name": "sumeru-health", "version": "0" }
         }
     });
     let Ok(resp) = client
@@ -390,7 +390,7 @@ pub async fn existing_endpoint_healthy(token: &str) -> bool {
         .and_then(|r| r.get("serverInfo"))
         .and_then(|s| s.get("name"))
         .and_then(|n| n.as_str())
-        == Some("funnelit")
+        == Some("sumeru")
 }
 
 /// Inputs: shared app state. Outputs: Ok(()) when the funnel HTTP server is listening.
@@ -411,7 +411,7 @@ pub async fn start(app: Arc<AppInner>) -> Result<(), String> {
                 return Ok(());
             }
             return Err(format!(
-                "{BIND_ADDR} already in use (quit the other funnelit, then Resume)"
+                "{BIND_ADDR} already in use (quit the other sumeru, then Resume)"
             ));
         }
         Err(err) => return Err(err.to_string()),
@@ -606,7 +606,7 @@ mod tests {
             Some(serde_json::json!({
                 "protocolVersion": PROTOCOL_VERSION,
                 "capabilities": {},
-                "clientInfo": { "name": "funnelit-test", "version": "0" }
+                "clientInfo": { "name": "sumeru-test", "version": "0" }
             })),
         )
         .await;

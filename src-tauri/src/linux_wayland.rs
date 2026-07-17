@@ -7,7 +7,7 @@ use std::{
     process::Command,
 };
 
-const DONE: &str = "FUNNELIT_WAYLAND_PRELOAD_DONE";
+const DONE: &str = "SUMERU_WAYLAND_PRELOAD_DONE";
 
 const CANDIDATES: &[&str] = &[
     "/usr/lib/libwayland-client.so.0",
@@ -54,7 +54,7 @@ pub fn maybe_reexec_with_system_wayland() {
     cmd.env("LD_PRELOAD", merged);
     cmd.env(DONE, "1");
     let err = cmd.exec();
-    eprintln!("funnelit: wayland preload re-exec failed: {err}");
+    eprintln!("sumeru: wayland preload re-exec failed: {err}");
 }
 
 /// Inputs: none. Outputs: path to host libwayland-client.so.0 when found.

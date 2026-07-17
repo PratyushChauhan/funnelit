@@ -10,7 +10,7 @@
 ```json
 {
   "mcpServers": {
-    "funnelit": {
+    "sumeru": {
       "url": "http://127.0.0.1:7341/mcp",
       "headers": {
         "Authorization": "Bearer <token>"
@@ -22,7 +22,7 @@
 
 ## Gateway tools
 
-Funnelit exposes exactly three MCP tools:
+Sumeru exposes exactly three MCP tools:
 
 | Tool | Inputs | Outputs |
 | --- | --- | --- |
@@ -33,13 +33,13 @@ Funnelit exposes exactly three MCP tools:
 ## Lifecycle
 
 - Upstream clients connect lazily on first `list_mcp_tools` / `execute_mcp_tool`
-- Connections are reused until Funnelit quits, the MCP is edited/deleted, or the transport closes
+- Connections are reused until Sumeru quits, the MCP is edited/deleted, or the transport closes
 - Tool execution is never auto-retried after an ambiguous failure
 
 ## Storage and security
 
-- Config: app config dir `/funnelit/servers.json`
-- Secrets: OS keychain service `funnelit`
+- Config: app config dir `/sumeru/servers.json`
+- Secrets: OS keychain service `sumeru`
 - Funnel binds only to `127.0.0.1`
 - Stdio commands are argv-based (no shell strings)
 - Upstream tool metadata/output is untrusted data

@@ -7,10 +7,10 @@ mod linux_wayland;
 /// Inputs: process args. Outputs: stdio MCP mode when `mcp-stdio`, else desktop UI.
 fn main() {
     if std::env::args().any(|a| a == "mcp-stdio") {
-        funnelit_lib::run_mcp_stdio();
+        sumeru_lib::run_mcp_stdio();
         return;
     }
     #[cfg(target_os = "linux")]
     linux_wayland::maybe_reexec_with_system_wayland();
-    funnelit_lib::run()
+    sumeru_lib::run()
 }

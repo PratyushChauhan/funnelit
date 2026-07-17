@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "funnelit",
+  "productName": "sumeru",
   "version": "0.1.0",
-  "identifier": "com.funnelit.app",
+  "identifier": "com.sumeru.app",
   "build": {
     "beforeDevCommand": "npm run docs:build && npm run dev",
     "beforeBuildCommand": "npm run docs:build && npm run build",
@@ -13,7 +13,7 @@
     "withGlobalTauri": false,
     "windows": [
       {
-        "title": "funnelit",
+        "title": "sumeru",
         "width": 960,
         "height": 720,
         "decorations": false,

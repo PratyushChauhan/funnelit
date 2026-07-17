@@ -1,11 +1,11 @@
 # Run at startup (Linux)
 
 1. Prefer an **installed / release** binary (not `tauri dev`)
-2. Open Funnelit → **Configure**
+2. Open Sumeru → **Configure**
 3. Enable **Run at system startup**
 4. Log out and back in
 
-Funnelit starts hidden in the tray with `--hidden`.
+Sumeru starts hidden in the tray with `--hidden`.
 
 ## How it works
 
@@ -16,6 +16,6 @@ If you enabled the toggle from a debug build under `target/debug/`, re-enable it
 ## Check
 
 ```bash
-ls ~/.config/autostart/*funnelit*
-grep '^Exec=' ~/.config/autostart/*funnelit* 2>/dev/null
+ls ~/.config/autostart/*sumeru*
+grep '^Exec=' ~/.config/autostart/*sumeru* 2>/dev/null
 ```

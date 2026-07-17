@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Minimal Streamable HTTP MCP test client for Funnelit (stdlib only).
+"""Minimal Streamable HTTP MCP test client for Sumeru (stdlib only).
 
 Exercises the Cursor-like lifecycle:
   initialize -> notifications/initialized -> GET SSE -> tools/list -> tools/call
 
 Examples:
-  FUNNELIT_TOKEN=... python3 scripts/mcp_test_client.py
+  SUMERU_TOKEN=... python3 scripts/mcp_test_client.py
   python3 scripts/mcp_test_client.py --keyring
   python3 scripts/mcp_test_client.py --keyring --clients 3 --call list_mcps
 """
@@ -34,7 +34,7 @@ PROTOCOL = "2025-06-18"
 def keyring_token() -> str:
     """Inputs: none. Outputs: endpoint bearer token from OS keyring."""
     out = subprocess.check_output(
-        ["secret-tool", "lookup", "service", "funnelit", "username", "endpoint-token"],
+        ["secret-tool", "lookup", "service", "sumeru", "username", "endpoint-token"],
         text=True,
     )
     return out.strip()
@@ -43,7 +43,7 @@ def keyring_token() -> str:
 class McpClient:
     """Inputs: url, token, user_agent. Outputs: JSON-RPC helpers over Streamable HTTP."""
 
-    def __init__(self, url: str, token: str, user_agent: str = "funnelit-mcp-test/0.1") -> None:
+    def __init__(self, url: str, token: str, user_agent: str = "sumeru-mcp-test/0.1") -> None:
         self.url = url
         self.token = token
         self.user_agent = user_agent
@@ -166,7 +166,7 @@ def run_lifecycle(
     get_read: int,
 ) -> dict[str, Any]:
     """Inputs: client identity + optional tools/call. Outputs: step results dict."""
-    c = McpClient(url, token, user_agent=f"funnelit-mcp-test/{name}")
+    c = McpClient(url, token, user_agent=f"sumeru-mcp-test/{name}")
     steps: list[dict[str, Any]] = []
     ok = True
 
@@ -244,9 +244,9 @@ def run_lifecycle(
 
 def main() -> int:
     """Inputs: CLI argv/env. Outputs: process exit code (0 on pass)."""
-    p = argparse.ArgumentParser(description="Funnelit Streamable HTTP MCP test client")
-    p.add_argument("--url", default=os.environ.get("FUNNELIT_URL", DEFAULT_URL))
-    p.add_argument("--token", default=os.environ.get("FUNNELIT_TOKEN"))
+    p = argparse.ArgumentParser(description="Sumeru Streamable HTTP MCP test client")
+    p.add_argument("--url", default=os.environ.get("SUMERU_URL", DEFAULT_URL))
+    p.add_argument("--token", default=os.environ.get("SUMERU_TOKEN"))
     p.add_argument("--keyring", action="store_true", help="Load token via secret-tool")
     p.add_argument("--clients", type=int, default=1, help="Concurrent clients")
     p.add_argument("--call", default="list_mcps", help="tools/call name (empty to skip)")
@@ -264,7 +264,7 @@ def main() -> int:
         try:
             token = keyring_token()
         except Exception as e:
-            print(f"error: no token (set FUNNELIT_TOKEN, --token, or --keyring): {e}", file=sys.stderr)
+            print(f"error: no token (set SUMERU_TOKEN, --token, or --keyring): {e}", file=sys.stderr)
             return 2
     if not token:
         print("error: empty token", file=sys.stderr)

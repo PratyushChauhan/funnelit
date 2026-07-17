@@ -9,7 +9,7 @@ The **Marketplace** tab lists a bundled curated catalog of HTTP MCPs that suppor
 1. Open **Marketplace**
 2. Find a provider and click **Install**
 3. Complete browser OAuth
-4. Funnelit saves the MCP only if sign-in succeeds
+4. Sumeru saves the MCP only if sign-in succeeds
 
 ## What stays on Configure
 

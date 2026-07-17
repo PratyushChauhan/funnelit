@@ -1,6 +1,6 @@
 # Getting started
 
-1. Launch Funnelit. The funnel starts automatically and keeps running in the tray when you close the window.
+1. Launch Sumeru. The funnel starts automatically and keeps running in the tray when you close the window.
 2. Open **Configure**. Copy the endpoint URL and bearer token.
 
 ![Configure tab with running badge, endpoint URL, and bearer token](/images/configure.png)
@@ -20,4 +20,4 @@
 
 ## Autostart
 
-Enable **Run at system startup** on the Configure tab so Funnelit launches hidden in the tray after login. Prefer enabling this from an installed/release build so the OS entry points at a stable binary path.
+Enable **Run at system startup** on the Configure tab so Sumeru launches hidden in the tray after login. Prefer enabling this from an installed/release build so the OS entry points at a stable binary path.

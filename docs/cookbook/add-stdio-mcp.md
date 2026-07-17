@@ -10,4 +10,4 @@
 5. Put secrets as `KEY=value` lines under env — values go in the OS keychain
 6. Click **Test**, then **Save**
 
-Funnelit starts the process with argv only (no shell). `PATH` and `HOME` are passed through; other env vars must be listed explicitly.
+Sumeru starts the process with argv only (no shell). `PATH` and `HOME` are passed through; other env vars must be listed explicitly.

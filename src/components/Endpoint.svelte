@@ -20,7 +20,7 @@
     JSON.stringify(
       {
         mcpServers: {
-          funnelit: {
+          sumeru: {
             url: status?.endpoint ?? "",
             headers: {
               Authorization: revealToken

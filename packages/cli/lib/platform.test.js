@@ -14,7 +14,7 @@ describe("platformKey", () => {
 
 describe("asset naming", () => {
   it("builds release asset names", () => {
-    assert.equal(assetName("0.1.0", "linux-x64"), "funnelit-v0.1.0-linux-x64");
+    assert.equal(assetName("0.1.0", "linux-x64"), "sumeru-v0.1.0-linux-x64");
     assert.equal(releaseTag("0.1.0"), "v0.1.0");
   });
 });
@@ -22,11 +22,11 @@ describe("asset naming", () => {
 describe("parseSha256Sum", () => {
   it("reads gnu sha256sum lines", () => {
     const body = [
-      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  funnelit-v0.1.0-linux-x64",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  sumeru-v0.1.0-linux-x64",
       "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb  other",
     ].join("\n");
     assert.equal(
-      parseSha256Sum(body, "funnelit-v0.1.0-linux-x64"),
+      parseSha256Sum(body, "sumeru-v0.1.0-linux-x64"),
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     );
   });

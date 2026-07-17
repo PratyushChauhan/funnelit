@@ -437,7 +437,7 @@ fn host_client_id(url: &str) -> Option<String> {
 async fn register_client(endpoint: &str) -> Result<(String, Option<String>), String> {
     let client = http_client()?;
     let body = serde_json::json!({
-        "client_name": "funnelit",
+        "client_name": "sumeru",
         "redirect_uris": [REDIRECT_URI],
         "grant_types": ["authorization_code", "refresh_token"],
         "response_types": ["code"],
@@ -579,7 +579,7 @@ async fn oauth_callback(
         let _ = tx.send(result);
     }
     Html(
-        "<!doctype html><title>funnelit</title><body style='font-family:sans-serif;padding:2rem'>Signed in. You can close this window and return to funnelit.</body>",
+        "<!doctype html><title>sumeru</title><body style='font-family:sans-serif;padding:2rem'>Signed in. You can close this window and return to sumeru.</body>",
     )
 }
 

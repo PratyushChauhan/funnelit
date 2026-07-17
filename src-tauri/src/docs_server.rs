@@ -61,7 +61,7 @@ pub async fn ensure_and_open(app: &AppHandle) -> Result<String, String> {
     if !STARTED.swap(true, Ordering::SeqCst) {
         let root_thread = root.clone();
         thread::Builder::new()
-            .name("funnelit-docs".into())
+            .name("sumeru-docs".into())
             .spawn(move || {
                 let rt = match tokio::runtime::Builder::new_current_thread()
                     .enable_all()
@@ -69,7 +69,7 @@ pub async fn ensure_and_open(app: &AppHandle) -> Result<String, String> {
                 {
                     Ok(rt) => rt,
                     Err(err) => {
-                        eprintln!("funnelit docs runtime: {err}");
+                        eprintln!("sumeru docs runtime: {err}");
                         STARTED.store(false, Ordering::SeqCst);
                         return;
                     }
@@ -78,7 +78,7 @@ pub async fn ensure_and_open(app: &AppHandle) -> Result<String, String> {
                     let listener = match tokio::net::TcpListener::bind(BIND).await {
                         Ok(l) => l,
                         Err(err) => {
-                            eprintln!("funnelit docs bind {BIND}: {err}");
+                            eprintln!("sumeru docs bind {BIND}: {err}");
                             STARTED.store(false, Ordering::SeqCst);
                             return;
                         }
@@ -87,7 +87,7 @@ pub async fn ensure_and_open(app: &AppHandle) -> Result<String, String> {
                         ServeDir::new(root_thread).append_index_html_on_directories(true),
                     );
                     if let Err(err) = axum::serve(listener, router).await {
-                        eprintln!("funnelit docs server exited: {err}");
+                        eprintln!("sumeru docs server exited: {err}");
                         STARTED.store(false, Ordering::SeqCst);
                     }
                 });

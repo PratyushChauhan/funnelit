@@ -5,7 +5,7 @@ import path from "node:path";
 import { assetName, releaseTag } from "./platform.js";
 import { cacheDir, cachedBinaryPath } from "./cache.js";
 
-const REPO = "PratyushChauhan/funnelit";
+const REPO = "PratyushChauhan/sumeru";
 
 /**
  * Inputs: URL and optional redirect depth. Outputs: response body Buffer.
@@ -13,7 +13,7 @@ const REPO = "PratyushChauhan/funnelit";
 function httpsGet(url, redirects = 0) {
   return new Promise((resolve, reject) => {
     https
-      .get(url, { headers: { "User-Agent": "funnelit-npm-cli" } }, (res) => {
+      .get(url, { headers: { "User-Agent": "sumeru-npm-cli" } }, (res) => {
         const loc = res.headers.location;
         if (
           redirects < 5 &&
@@ -56,8 +56,8 @@ export function parseSha256Sum(body, assetBasename) {
  * Inputs: version and platform key. Outputs: path to verified cached binary.
  */
 export async function ensureBinary(version, key) {
-  if (process.env.FUNNELIT_BINARY) {
-    return path.resolve(process.env.FUNNELIT_BINARY);
+  if (process.env.SUMERU_BINARY) {
+    return path.resolve(process.env.SUMERU_BINARY);
   }
   const dest = cachedBinaryPath(version, key);
   const name = assetName(version, key);
@@ -71,7 +71,7 @@ export async function ensureBinary(version, key) {
 
   fs.mkdirSync(cacheDir(), { recursive: true });
   const tmp = `${dest}-${crypto.randomBytes(4).toString("hex")}.partial`;
-  process.stderr.write(`funnelit: downloading ${name}…\n`);
+  process.stderr.write(`sumeru: downloading ${name}…\n`);
   const [binBuf, sumBuf] = await Promise.all([
     httpsGet(`${base}/${name}`),
     httpsGet(`${base}/${sumsName}`),

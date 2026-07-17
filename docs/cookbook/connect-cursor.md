@@ -1,6 +1,6 @@
 # Connect Cursor
 
-1. Start Funnelit and confirm the badge shows **running**
+1. Start Sumeru and confirm the badge shows **running**
 2. On **Configure**, copy the endpoint URL and bearer token
 
 ![Configure tab with running badge, endpoint URL, and bearer token](/images/configure.png)
@@ -10,7 +10,7 @@
 ```json
 {
   "mcpServers": {
-    "funnelit": {
+    "sumeru": {
       "url": "http://127.0.0.1:7341/mcp",
       "headers": {
         "Authorization": "Bearer <token>"
@@ -30,12 +30,12 @@ If you prefer stdio instead of HTTP:
 ```json
 {
   "mcpServers": {
-    "funnelit": {
-      "command": "funnelit",
+    "sumeru": {
+      "command": "sumeru",
       "args": ["mcp-stdio"]
     }
   }
 }
 ```
 
-Install the CLI with `npm i -g funnelit` first (or point `FUNNELIT_BINARY` at a local build).
+Install the CLI with `npm i -g sumeru` first (or point `SUMERU_BINARY` at a local build).

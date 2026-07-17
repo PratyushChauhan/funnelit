@@ -3,9 +3,9 @@
 Install the npm launcher (downloads the matching portable binary on first run):
 
 ```bash
-npm i -g funnelit
-funnelit doctor
-funnelit mcp-stdio   # or just: funnelit
+npm i -g sumeru
+sumeru doctor
+sumeru mcp-stdio   # or just: sumeru
 ```
 
 ## Stdio MCP host config
@@ -13,8 +13,8 @@ funnelit mcp-stdio   # or just: funnelit
 ```json
 {
   "mcpServers": {
-    "funnelit": {
-      "command": "funnelit",
+    "sumeru": {
+      "command": "sumeru",
       "args": ["mcp-stdio"]
     }
   }
@@ -23,10 +23,10 @@ funnelit mcp-stdio   # or just: funnelit
 
 ## Overrides
 
-- `FUNNELIT_BINARY` — local binary path
-- `FUNNELIT_VERSION` — release version to download
-- `FUNNELIT_CACHE_DIR` — cache directory for binaries
+- `SUMERU_BINARY` — local binary path
+- `SUMERU_VERSION` — release version to download
+- `SUMERU_CACHE_DIR` — cache directory for binaries
 
 ## Doctor
 
-`funnelit doctor` reports CLI version, platform, cached binary, config dir writability, and whether something answers on `:7341/mcp`.
+`sumeru doctor` reports CLI version, platform, cached binary, config dir writability, and whether something answers on `:7341/mcp`.

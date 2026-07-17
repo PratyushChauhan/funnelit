@@ -1,10 +1,12 @@
-# funnelit
+# sumeru
 
-Local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URLs) and expose them through one authenticated Streamable HTTP endpoint.
+Formerly **funnelit**. Local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URLs) and expose them through one authenticated Streamable HTTP endpoint.
 
-**Docs:** [GitHub Pages](https://pratyushchauhan.github.io/funnelit/) · in the app, **Docs** serves the same VitePress site locally at `http://127.0.0.1:7343`. Source is [`docs/`](docs/). Preview with `npm run docs:dev`.
+**Breaking (v0.1):** app id `com.sumeru.app`, config dir, keychain service `sumeru`, CLI/npm `sumeru`, and env `SUMERU_*`. Prior funnelit installs are not migrated — reconfigure or copy config/secrets manually.
 
-**Linux AppImage on Wayland:** if you see `EGL_BAD_PARAMETER`, run with `LD_PRELOAD=/usr/lib/libwayland-client.so ./funnelit_*.AppImage` (or use the `.deb` / `.tar.gz`). Newer builds also re-exec with the host Wayland client automatically. See Docs → Linux.
+**Docs:** [GitHub Pages](https://pratyushchauhan.github.io/sumeru/) · in the app, **Docs** serves the same VitePress site locally at `http://127.0.0.1:7343`. Source is [`docs/`](docs/). Preview with `npm run docs:dev`.
+
+**Linux AppImage on Wayland:** if you see `EGL_BAD_PARAMETER`, run with `LD_PRELOAD=/usr/lib/libwayland-client.so ./sumeru_*.AppImage` (or use the `.deb` / `.tar.gz`). Newer builds also re-exec with the host Wayland client automatically. See Docs → Linux.
 
 ## Run
 
@@ -17,16 +19,16 @@ npm run tauri dev
 
 CI:
 - PRs / manual: `.github/workflows/build.yml` uploads installers as workflow artifacts
-- Push to `main`: `.github/workflows/release.yml` builds macOS (arm64 + x64) and Linux and publishes them to a [GitHub Release](https://github.com/PratyushChauhan/funnelit/releases) tagged `v__VERSION__` from `tauri.conf.json` (currently `v0.1.0`). Re-pushes with the same version update that release’s assets. Releases also include portable CLI binaries (`funnelit-v*-linux-x64`, `darwin-arm64`, `darwin-x64`) plus `.sha256` checksums. When `NPM_TOKEN` is set as a repo secret, the workflow publishes the [`packages/cli`](packages/cli) npm package.
+- Push to `main`: `.github/workflows/release.yml` builds macOS (arm64 + x64) and Linux and publishes them to a [GitHub Release](https://github.com/PratyushChauhan/sumeru/releases) tagged `v__VERSION__` from `tauri.conf.json` (currently `v0.1.0`). Re-pushes with the same version update that release’s assets. Releases also include portable CLI binaries (`sumeru-v*-linux-x64`, `darwin-arm64`, `darwin-x64`) plus `.sha256` checksums. When `NPM_TOKEN` is set as a repo secret, the workflow publishes the [`packages/cli`](packages/cli) npm package.
 
 ## npm CLI
 
 Install the launcher (downloads the matching portable binary on first run):
 
 ```bash
-npm i -g funnelit
-funnelit doctor
-funnelit mcp-stdio   # or just: funnelit
+npm i -g sumeru
+sumeru doctor
+sumeru mcp-stdio   # or just: sumeru
 ```
 
 Cursor / MCP host stdio config example:
@@ -34,15 +36,15 @@ Cursor / MCP host stdio config example:
 ```json
 {
   "mcpServers": {
-    "funnelit": {
-      "command": "funnelit",
+    "sumeru": {
+      "command": "sumeru",
       "args": ["mcp-stdio"]
     }
   }
 }
 ```
 
-Overrides: `FUNNELIT_BINARY` (local binary path), `FUNNELIT_VERSION`, `FUNNELIT_CACHE_DIR`.
+Overrides: `SUMERU_BINARY` (local binary path), `SUMERU_VERSION`, `SUMERU_CACHE_DIR`.
 
 ## Funnel endpoint
 
@@ -58,7 +60,7 @@ Example client config:
 ```json
 {
   "mcpServers": {
-    "funnelit": {
+    "sumeru": {
       "url": "http://127.0.0.1:7341/mcp",
       "headers": {
         "Authorization": "Bearer <token>"
@@ -73,18 +75,18 @@ Example client config:
 Stdlib Python client that mirrors the Cursor handshake (`initialize` → `initialized` → GET SSE → `tools/list` → `tools/call`):
 
 ```bash
-# Funnelit must be running on :7341
+# Sumeru must be running on :7341
 python3 scripts/mcp_test_client.py --keyring
 python3 scripts/mcp_test_client.py --keyring --clients 3
 python3 scripts/mcp_test_client.py --keyring --call list_mcp_tools \
   --args '{"mcp_id":"<id>"}'
 ```
 
-Token can also come from `FUNNELIT_TOKEN` or `--token`. Exit code `0` on pass.
+Token can also come from `SUMERU_TOKEN` or `--token`. Exit code `0` on pass.
 
 ## Gateway tools
 
-Funnelit exposes exactly three MCP tools:
+Sumeru exposes exactly three MCP tools:
 
 | Tool | Inputs | Outputs |
 | --- | --- | --- |
@@ -97,7 +99,7 @@ Funnelit exposes exactly three MCP tools:
 - **stdio**: paste a command (e.g. `npx`) plus args/env secrets (keychain)
 - **http**: paste a Streamable HTTP MCP URL
 
-For HTTP MCPs that advertise OAuth (RFC 9728 / 8414), funnelit shows **Sign in** and opens the provider login page in your browser. Tokens are stored in the keychain.
+For HTTP MCPs that advertise OAuth (RFC 9728 / 8414), sumeru shows **Sign in** and opens the provider login page in your browser. Tokens are stored in the keychain.
 
 OAuth paths:
 
@@ -116,13 +118,13 @@ The **Marketplace** tab lists a bundled curated catalog of HTTP MCPs that suppor
 
 - Closing the window hides the UI; the MCP funnel keeps serving from the tray
 - Upstream clients connect lazily on first `list_mcp_tools` / `execute_mcp_tool`
-- Connections are reused until Funnelit quits, the MCP is edited/deleted, or the transport closes
+- Connections are reused until Sumeru quits, the MCP is edited/deleted, or the transport closes
 - Tool execution is never auto-retried after an ambiguous failure
 
 ## Storage
 
-- Config: app config dir `/funnelit/servers.json`
-- Secrets: OS keychain service `funnelit` (endpoint token, env/header/bearer values, OAuth client + refresh tokens)
+- Config: app config dir `/sumeru/servers.json`
+- Secrets: OS keychain service `sumeru` (endpoint token, env/header/bearer values, OAuth client + refresh tokens)
 
 ## Security notes
 

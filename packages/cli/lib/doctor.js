@@ -7,7 +7,7 @@ import { ensureBinary } from "./download.js";
 import { packageVersion, platformKey } from "./platform.js";
 
 /**
- * Inputs: none. Outputs: Funnelit config directory path (best effort).
+ * Inputs: none. Outputs: Sumeru config directory path (best effort).
  */
 export function configDir() {
   if (process.platform === "darwin") {
@@ -15,12 +15,12 @@ export function configDir() {
       os.homedir(),
       "Library",
       "Application Support",
-      "com.funnelit.app",
-      "funnelit",
+      "com.sumeru.app",
+      "sumeru",
     );
   }
   const xdg = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), ".config");
-  return path.join(xdg, "com.funnelit.app", "funnelit");
+  return path.join(xdg, "com.sumeru.app", "sumeru");
 }
 
 /**
@@ -48,7 +48,7 @@ function probeEndpoint() {
  * Inputs: none. Outputs: doctor report lines; exit-oriented ok flag.
  */
 export async function runDoctor() {
-  const version = process.env.FUNNELIT_VERSION || packageVersion();
+  const version = process.env.SUMERU_VERSION || packageVersion();
   const key = platformKey();
   const lines = [];
   let ok = true;

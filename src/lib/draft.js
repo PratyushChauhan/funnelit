@@ -100,7 +100,7 @@ export function chatgptOauthGuideUrl(mcpUrl) {
     ? `Sanitized MCP URL shared with you (query, fragment, and credentials removed): ${safeUrl}`
     : "MCP URL was not shared (could not sanitize it safely).";
   const prompt = [
-    "I am connecting an MCP server to funnelit (a local MCP funnel desktop app).",
+    "I am connecting an MCP server to sumeru (a local MCP funnel desktop app).",
     "This server does not support OAuth Dynamic Client Registration.",
     "",
     urlLine,
@@ -111,7 +111,7 @@ export function chatgptOauthGuideUrl(mcpUrl) {
     "2. Enable MCP or the scopes this MCP needs",
     "3. Register that redirect URI",
     "4. Find the Client ID and Client secret (if any)",
-    "5. What to paste into funnelit Advanced → OAuth fields, then click Sign in",
+    "5. What to paste into sumeru Advanced → OAuth fields, then click Sign in",
     "",
     "Be concrete for this exact URL/provider. Keep steps short.",
   ].join("\n");

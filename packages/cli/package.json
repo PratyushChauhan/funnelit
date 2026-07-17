@@ -1,10 +1,10 @@
 {
-  "name": "funnelit",
+  "name": "sumeru",
   "version": "0.1.0",
-  "description": "CLI launcher for Funnelit MCP stdio (downloads native binary from GitHub Releases)",
+  "description": "CLI launcher for Sumeru MCP stdio (downloads native binary from GitHub Releases)",
   "type": "module",
   "bin": {
-    "funnelit": "bin/funnelit.js"
+    "sumeru": "bin/sumeru.js"
   },
   "files": [
     "bin",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PratyushChauhan/funnelit.git",
+    "url": "git+https://github.com/PratyushChauhan/sumeru.git",
     "directory": "packages/cli"
   },
-  "homepage": "https://github.com/PratyushChauhan/funnelit#readme",
+  "homepage": "https://github.com/PratyushChauhan/sumeru#readme",
   "license": "MIT",
   "keywords": [
     "mcp",
-    "funnelit",
+    "sumeru",
     "cli"
   ],
   "scripts": {

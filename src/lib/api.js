@@ -81,6 +81,6 @@ export const openUrl = (url) => invoke("open_url", { url });
 export const openDocs = () => invoke("open_docs");
 
 /**
- * Inputs: none. Outputs: absolute path to the funnelit binary for stdio MCP.
+ * Inputs: none. Outputs: absolute path to the sumeru binary for stdio MCP.
  */
 export const mcpStdioCommand = () => invoke("mcp_stdio_command");

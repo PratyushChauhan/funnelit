@@ -24,7 +24,7 @@ export function platformKey(platform = process.platform, arch = process.arch) {
  * Inputs: version and platform key. Outputs: release asset basename.
  */
 export function assetName(version, key) {
-  return `funnelit-v${version}-${key}`;
+  return `sumeru-v${version}-${key}`;
 }
 
 /**

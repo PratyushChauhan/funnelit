@@ -1,6 +1,6 @@
 # Install on Linux
 
-From a [GitHub Release](https://github.com/PratyushChauhan/funnelit/releases), pick an **amd64/x64** asset that matches your machine (`uname -m`).
+From a [GitHub Release](https://github.com/PratyushChauhan/sumeru/releases), pick an **amd64/x64** asset that matches your machine (`uname -m`).
 
 | Asset | How to use |
 | --- | --- |

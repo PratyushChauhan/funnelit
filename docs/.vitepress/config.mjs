@@ -1,10 +1,10 @@
 import { defineConfig } from "vitepress";
 
-/** Inputs: none. Outputs: VitePress site config for funnelit docs. */
+/** Inputs: none. Outputs: VitePress site config for sumeru docs. */
 export default defineConfig({
-  title: "funnelit",
+  title: "sumeru",
   description: "Local desktop MCP funnel",
-  // Local/app: `/`. GitHub Pages project site: `DOCS_BASE=/funnelit/`.
+  // Local/app: `/`. GitHub Pages project site: `DOCS_BASE=/sumeru/`.
   base: process.env.DOCS_BASE || "/",
   srcDir: ".",
   outDir: "../src-tauri/resources/docs",
@@ -15,7 +15,7 @@ export default defineConfig({
       { text: "Guides", link: "/" },
       {
         text: "GitHub",
-        link: "https://github.com/PratyushChauhan/funnelit",
+        link: "https://github.com/PratyushChauhan/sumeru",
       },
     ],
     sidebar: [

@@ -17,15 +17,15 @@ jobs:
         include:
           - platform: macos-latest
             args: --target aarch64-apple-darwin
-            binary: src-tauri/target/aarch64-apple-darwin/release/funnelit
+            binary: src-tauri/target/aarch64-apple-darwin/release/sumeru
             cli_suffix: darwin-arm64
           - platform: macos-latest
             args: --target x86_64-apple-darwin
-            binary: src-tauri/target/x86_64-apple-darwin/release/funnelit
+            binary: src-tauri/target/x86_64-apple-darwin/release/sumeru
             cli_suffix: darwin-x64
           - platform: ubuntu-22.04
             args: ""
-            binary: src-tauri/target/release/funnelit
+            binary: src-tauri/target/release/sumeru
             cli_suffix: linux-x64
 
     runs-on: ${{ matrix.platform }}
@@ -58,7 +58,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__' }}
-          releaseName: funnelit ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__' }}
+          releaseName: sumeru ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__' }}
           releaseBody: Desktop builds and portable CLI binaries for macOS and Linux.
           releaseDraft: false
           prerelease: false
@@ -84,7 +84,7 @@ jobs:
           set -euo pipefail
           VERSION=$(jq -r .version src-tauri/tauri.conf.json)
           TAG="v${VERSION}"
-          NAME="funnelit-v${VERSION}-${{ matrix.cli_suffix }}"
+          NAME="sumeru-v${VERSION}-${{ matrix.cli_suffix }}"
           mkdir -p dist-cli
           cp "${{ matrix.binary }}" "dist-cli/${NAME}"
           chmod +x "dist-cli/${NAME}"
