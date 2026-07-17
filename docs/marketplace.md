@@ -2,6 +2,8 @@
 
 The **Marketplace** tab lists a bundled curated catalog of HTTP MCPs that support Dynamic Client Registration (DCR).
 
+![Marketplace tab with curated providers and Install buttons](/images/marketplace.png)
+
 ## Install
 
 1. Open **Marketplace**

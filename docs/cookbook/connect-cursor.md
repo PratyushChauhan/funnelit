@@ -2,6 +2,9 @@
 
 1. Start Funnelit and confirm the badge shows **running**
 2. On **Configure**, copy the endpoint URL and bearer token
+
+![Configure tab with running badge, endpoint URL, and bearer token](/images/configure.png)
+
 3. In Cursor MCP settings, add:
 
 ```json

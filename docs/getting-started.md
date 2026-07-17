@@ -2,9 +2,13 @@
 
 1. Launch Funnelit. The funnel starts automatically and keeps running in the tray when you close the window.
 2. Open **Configure**. Copy the endpoint URL and bearer token.
-3. Add MCPs:
-   - **Marketplace** — one-click install for curated DCR HTTP MCPs
-   - **Configure → Add MCP** — stdio commands or HTTP MCP URLs (remote URLs need HTTPS; plain HTTP is loopback-only — see [OAuth](./oauth.md))
+
+![Configure tab with running badge, endpoint URL, and bearer token](/images/configure.png)
+
+3. Add MCPs via **Marketplace** (curated DCR HTTP MCPs) or **Configure → Add MCP** (stdio commands or HTTP MCP URLs — remote URLs need HTTPS; plain HTTP is loopback-only — see [OAuth](./oauth.md)).
+
+![Marketplace tab with curated providers and Install buttons](/images/marketplace.png)
+
 4. Point your MCP host (Cursor, etc.) at the funnel endpoint with the bearer token.
 
 ## Tray and pause

@@ -1,6 +1,9 @@
 # Install from Marketplace
 
 1. Open the **Marketplace** tab
+
+![Marketplace tab with curated providers and Install buttons](/images/marketplace.png)
+
 2. Search or browse the catalog
 3. Click **Install** on a provider
 4. Complete browser OAuth when prompted

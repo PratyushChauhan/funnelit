@@ -2,6 +2,8 @@
 
 Funnelit is a local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URLs) and expose them through one authenticated Streamable HTTP endpoint.
 
+![Configure tab with running badge, endpoint URL, and bearer token](/images/configure.png)
+
 ## What you get
 
 - One endpoint at `http://127.0.0.1:7341/mcp`
