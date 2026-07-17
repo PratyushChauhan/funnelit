@@ -50,3 +50,10 @@ jobs:
         with:
           args: ${{ matrix.args }}
           uploadWorkflowArtifacts: true
+
+      - name: Strip bundled Wayland libs from AppImage
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get install -y libfuse2 || true
+          chmod +x scripts/strip-appimage-wayland.sh
+          ./scripts/strip-appimage-wayland.sh src-tauri/target/release/bundle/appimage
