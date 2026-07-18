@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/public/images/sumeru-mark-light.svg" />
+    <img src="docs/public/images/sumeru-mark.svg" alt="Sumeru" width="96" />
+  </picture>
+</p>
+
 # sumeru
 
 Formerly **funnelit**. Local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URLs) and expose them through one authenticated Streamable HTTP endpoint.
