@@ -18,7 +18,7 @@
     "url": "git+https://github.com/PratyushChauhan/sumeru.git",
     "directory": "packages/cli"
   },
-  "homepage": "https://github.com/PratyushChauhan/sumeru#readme",
+  "homepage": "https://pratyushchauhan.github.io/sumeru/",
   "license": "MIT",
   "keywords": [
     "mcp",

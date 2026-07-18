@@ -5,6 +5,8 @@
 
 # sumeru
 
+[Docs](https://pratyushchauhan.github.io/sumeru/) · [npm](https://www.npmjs.com/package/sumeru-mcp)
+
 Formerly **funnelit**. Local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URLs) and expose them through one authenticated Streamable HTTP endpoint.
 
 ## Codex & GPT-5.6
