@@ -1,16 +1,34 @@
 import { defineConfig } from "vitepress";
 
+const rawBase = process.env.DOCS_BASE || "/";
+const base = rawBase === "/" ? "/" : rawBase.replace(/\/?$/, "/");
+
 /** Inputs: none. Outputs: VitePress site config for sumeru docs. */
 export default defineConfig({
   title: "sumeru",
   description: "Local desktop MCP funnel",
   // Local/app: `/`. GitHub Pages project site: `DOCS_BASE=/sumeru/`.
-  base: process.env.DOCS_BASE || "/",
+  base,
   srcDir: ".",
   outDir: "../src-tauri/resources/docs",
   cleanUrls: true,
   appearance: "dark",
+  head: [
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: `${base}images/sumeru-mark.svg`,
+      },
+    ],
+  ],
   themeConfig: {
+    logo: {
+      light: "/images/sumeru-mark.svg",
+      dark: "/images/sumeru-mark-light.svg",
+      alt: "Sumeru",
+    },
     nav: [
       { text: "Guides", link: "/" },
       {
