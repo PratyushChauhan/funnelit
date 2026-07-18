@@ -1,7 +1,7 @@
 {
   "name": "sumeru",
   "private": true,
-  "version": "0.2.11",
+  "version": "0.2.12",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -13,6 +13,7 @@
     "docs:preview": "vitepress preview docs",
     "test": "node --test src/lib/marketplace.test.js packages/cli/lib/*.test.js",
     "test:mcp": "python3 scripts/mcp_test_client.py --keyring",
+    "version:bump": "node scripts/bump-version.mjs",
     "tauri": "tauri"
   },
   "dependencies": {
