@@ -2,7 +2,8 @@
 name = "sumeru"
 version = "0.2.1"
 description = "Local MCP funnel desktop app"
-authors = ["you"]
+authors = ["Pratyush Chauhan"]
+license = "MIT"
 edition = "2021"
 
 [lib]
