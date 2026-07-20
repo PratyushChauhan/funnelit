@@ -9,16 +9,6 @@
 
 Formerly **funnelit**. Local desktop MCP funnel. Add N upstream MCP servers (stdio commands or HTTP URLs) and expose them through one authenticated Streamable HTTP endpoint.
 
-## Codex & GPT-5.6
-
-- **GPT-5.6 Sol** — used to plan the product and architecture (local MCP funnel, three-tool gateway, OAuth/DCR flows, tray lifecycle, Marketplace).
-
-**Breaking (v0.1):** app id `com.sumeru.app`, config dir, keychain service `sumeru`, CLI/npm `sumeru`, and env `SUMERU_*`. Prior funnelit installs are not migrated — reconfigure or copy config/secrets manually.
-
-**Docs:** [GitHub Pages](https://pratyushchauhan.github.io/sumeru/) · in the app, **Docs** serves the same VitePress site locally at `http://127.0.0.1:7343`. Source is [`docs/`](docs/). Preview with `npm run docs:dev`.
-
-**Linux AppImage on Wayland:** if you see `EGL_BAD_PARAMETER`, run with `LD_PRELOAD=/usr/lib/libwayland-client.so ./sumeru_*.AppImage` (or use the `.deb` / `.tar.gz`). Newer builds also re-exec with the host Wayland client automatically. See Docs → Linux.
-
 <p align="center">
   <img src="docs/public/images/configure.png" alt="Configure tab with running badge, endpoint URL, and bearer token" width="420" />
   &nbsp;
@@ -151,3 +141,14 @@ The **Marketplace** tab lists a bundled curated catalog of HTTP MCPs that suppor
 - Endpoint bearer token is required
 - Stdio commands are argv-based (no shell strings)
 - Upstream tool metadata/output is untrusted data
+
+## Codex & GPT-5.6
+
+- **GPT-5.6 Sol** — used to plan the product and architecture (local MCP funnel, three-tool gateway, OAuth/DCR flows, tray lifecycle, Marketplace).
+
+**Breaking (v0.1):** app id `com.sumeru.app`, config dir, keychain service `sumeru`, CLI/npm `sumeru`, and env `SUMERU_*`. Prior funnelit installs are not migrated — reconfigure or copy config/secrets manually.
+
+**Docs:** [GitHub Pages](https://pratyushchauhan.github.io/sumeru/) · in the app, **Docs** serves the same VitePress site locally at `http://127.0.0.1:7343`. Source is [`docs/`](docs/). Preview with `npm run docs:dev`.
+
+**Linux AppImage on Wayland:** if you see `EGL_BAD_PARAMETER`, run with `LD_PRELOAD=/usr/lib/libwayland-client.so ./sumeru_*.AppImage` (or use the `.deb` / `.tar.gz`). Newer builds also re-exec with the host Wayland client automatically. See Docs → Linux.
+
